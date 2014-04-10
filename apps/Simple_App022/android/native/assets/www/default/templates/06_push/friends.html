@@ -1,0 +1,68 @@
+<ion-view title="'Hello PUSH'" right-buttons="newFriendsButton" ng-init="init()">
+    <ion-content has-header="true" has-tabs="true">
+	    <div class="list">
+	    	<label class="item item-input">
+			    <span class="input-label">姓名: </span>
+			    <input type="text" ng-model="model.name">
+			</label>
+			<label class="item item-input">
+			    <span class="input-label">電話: </span>
+			    <input type="tel" ng-model="model.phone">
+			</label>
+			<label class="item item-input">
+			    <span class="input-label">郵件: </span>
+			    <input type="email" ng-model="model.email">
+			</label>
+			<label class="item item-input">
+			    <span class="input-label">生日: </span>
+			    <input type="date" ng-model="model.birthday">
+			</label>
+			
+			<div class="item item-input-inset">
+			    <button ng-click="onCreateClick()" ng-show="state == CREATE" class="button button-positive">新增</button>
+				<button ng-click="onEditClick()" ng-show="state == EDIT" class="button button-positive">修改</button>
+				<button ng-click="onDeleteClick()" ng-show="state == DELETE" class="button button-positive">刪除</button>
+				
+				<button ng-click="setFriendsFromContacts()" ng-show="state == ADDFRIEND" class="button button-positive">匯入聯絡人</button>
+				<button ng-show="state == ADDFRIEND" class="button button-positive">匯入FB朋友</button>
+				<button ng-show="state == ADDFRIEND" class="button button-positive">Q進朋友</button>
+				<button ng-show="state == ADDFRIEND" class="button button-positive">搖來朋友</button>
+				
+				<button ng-click="onSMSClick()" ng-show="state == BLESS" class="button button-positive">簡訊</button>
+				<button ng-click="onPhoneClick()" ng-show="state == BLESS" class="button button-positive">電話</button>
+				<button ng-click="onEmailClick()" ng-show="state == BLESS" class="button button-positive">郵件</button>
+				<button ng-click="onMessageClick()" ng-disabled="!model.isMember" ng-show="state == BLESS" class="button button-positive">訊息</button>
+		    	<label class="item-input-wrapper" ng-show="state == MESSAGE || state == RECEIVE">
+		      		<input type="text" placeholder="請輸入訊息...." ng-model="message.text">
+		    	</label>
+	    		<button class="button button-positive" ng-click="onSendMessageClick()" ng-show="state == MESSAGE">
+		      		傳送
+		    	</button>
+		    	<button class="button button-positive" ng-click="onReceiveMessageClick()" ng-show="state == RECEIVE">
+		      		接收
+		    	</button>
+		    	<button ng-click="onCancelClick()" class="button button-positive" ng-show="state != RECEIVE">取消</button>
+	  		</div>
+  		</div>
+	  		
+		<div class="list">
+		    <div ng-show="getCount() == 0" class="item item-icon-left" >
+			    <i class="icon ion-person-stalker"></i>
+			    	朋友列表
+			    <span class="item-note">
+					請新增朋友
+				</span>
+			</div>
+			
+		    <div ng-show="getCount() > 0" ng-repeat="friend in friends track by $index" class="item item-icon-left item-icon-right">
+		    	<i class="icon ion-edit" ng-click="onFriendClick(EDIT, friend.id)"></i>
+                <div ng-click="onFriendClick(BLESS, friend.id)">
+	                <h2 ng-class="friend.isMember ? 'member' : ''">{{friend.name}}</h2>
+	                <p>{{friend.phone}}</p>
+			    </div>
+			    <i class="icon ion-close" ng-click="onFriendClick(DELETE, friend.id)"></i>
+	        </div>
+        </div>
+	    
+    </ion-content>
+</ion-view>
