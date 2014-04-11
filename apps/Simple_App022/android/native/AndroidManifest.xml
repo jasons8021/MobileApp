@@ -55,7 +55,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>  
                 <category android:name="android.intent.category.LAUNCHER"/> 
             </intent-filter> 
-        </receiver>
+        </receiver>  
         <service android:name=".MQService" android:label="MQTT Push Notifications Service"/>  
         <!-- StandAlongMQService -->  
         <service android:name=".StandAlongMQService" android:label="MQTT Push Notifications Service" android:process=":demomqtt_standalone_service"/> 

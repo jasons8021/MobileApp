@@ -72,38 +72,42 @@ app.factory('FriendManager', function(DBManager, iLabMember) {
 		}
 	});
 	return {
-		add: function(friend) {
+		add: function(friend, onSuccess, onError) {
 			iLabMember.isMember(friend.phone, function(response) {
 				friend.isMember = JSON.parse(response) ? 1 : 0;
 				DBManager.addFriend(friend, function() {
 					idIndexedFriends[friend.id] = friend;
-				});
+					(onSuccess || angular.noop)();
+				}, onError);
 			}, function() {
 				friend.isMember = 0;
 				DBManager.addFriend(friend, function() {
 					idIndexedFriends[friend.id] = friend;
-				});
+					(onSuccess || angular.noop)();
+				}, onError);
 			});
 		},
-		edit: function(friend) {
+		edit: function(friend, onSuccess, onError) {
 			iLabMember.isMember(friend.phone, function(response) {
 				friend.isMember = response ? 1 : 0;
 				DBManager.updateFriend(friend, function() {
 					idIndexedFriends[friend.id] = friend;
 					phoneIndexedFriends[friend.phone] = friend;
-				});
+					(onSuccess || angular.noop)();
+				}, onError);
 			}, function() {
 				friend.isMember = 0;
 				DBManager.updateFriend(friend, function() {
 					idIndexedFriends[friend.id] = friend;
 					phoneIndexedFriends[friend.phone] = friend;
-				});
+					(onSuccess || angular.noop)();
+				}, onError);
 			});
 		},
-		remove: function(friend) {
+		remove: function(friend, onSuccess, onError) {
 			DBManager.deleteFriend(friend, function() {
 				delete idIndexedFriends[friend.id];
-			});
+			}, onError);
 		},
 		getById: function(id) {
 			return idIndexedFriends[id];

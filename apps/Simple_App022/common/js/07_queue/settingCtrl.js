@@ -1,4 +1,4 @@
-app.controller('SettingCtrl',function($scope, $window, SettingManager, $ionicLoading, $http, Notification, iLabMember){
+app.controller('SettingCtrl',function($scope, $window, SettingManager, $ionicLoading, $http, Notification, iLabMember, iLabMessage){
 	$scope.UNREGISTERED = 0;
 	$scope.REGISTERED = 1;
 	$scope.DELETE = 2;
@@ -17,17 +17,20 @@ app.controller('SettingCtrl',function($scope, $window, SettingManager, $ionicLoa
     };
     
     $scope.onRegisterClick = function() {
-    	if(!$scope.host.phone) {
+    	if(!$scope.host.phone || !$scope.host.name) {
     		Notification.alert('請輸入電話', null, "通知");
     		return;
     	}
+    	console.log($window.device.uuid);
+    	
     	$scope.show();
     	iLabMember.register($scope.host,
      		   function() {
  				$scope.hide();
      			$scope.host.registered = true;
      			Notification.alert('註冊成功', null, "通知");
-     			SettingManager.setHost($scope.host);
+     			SettingManager.setHost($scope.host);     			
+     			$window.plugins.MQTTPlugin.CONNECT(angular.noop, angular.noop, $scope.host.phone, $scope.host.phone);
      			$scope.state = $scope.REGISTERED;
      		}, function() {
      			$scope.hide();

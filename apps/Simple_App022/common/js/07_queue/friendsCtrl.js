@@ -12,6 +12,7 @@ app.controller('FriendsCtrl', function($scope, FriendManager, Contacts, Notifica
 	$scope.message = {};
 	$scope.message.text = "";
 	$scope.friends = null;
+	$scope.localQueue = new Array();
 
 	$scope.init = function() {
 		$scope.friends = FriendManager.list();
@@ -37,7 +38,7 @@ app.controller('FriendsCtrl', function($scope, FriendManager, Contacts, Notifica
 			Notification.alert("請輸入姓名及電話", null, '警告', '確定');
 			return;
 		}
-		FriendManager.add($scope.model);
+		FriendManager.add($scope.model, $scope.$apply);
 		$scope.model = {};
 	};
 	
@@ -48,13 +49,13 @@ app.controller('FriendsCtrl', function($scope, FriendManager, Contacts, Notifica
 	};
 	
 	$scope.onEditClick = function() {
-		FriendManager.edit($scope.model);
+		FriendManager.edit($scope.model, $scope.$apply);
 		$scope.model = {};
 		$scope.state = $scope.CREATE;
 	};
 	
 	$scope.onDeleteClick = function() {
-		FriendManager.remove($scope.model);
+		FriendManager.remove($scope.model, $scope.$apply);
 		$scope.model = {};
 		$scope.state = $scope.CREATE;
 	};
@@ -88,7 +89,7 @@ app.controller('FriendsCtrl', function($scope, FriendManager, Contacts, Notifica
                 email: (contactArray[i].emails && contactArray[i].emails.length > 0) ? contactArray[i].emails[0].value : "",
                 birthday: contactArray[i].birthday
             };
-            FriendManager.add(friend);
+            FriendManager.add(friend, $scope.$apply);
         }
         $scope.hide();
         $scope.state = $scope.CREATE;
@@ -150,19 +151,39 @@ app.controller('FriendsCtrl', function($scope, FriendManager, Contacts, Notifica
 	};
 	
 	$scope.onReceiveMessageClick = function() {
-		$scope.state = $scope.MESSAGE;
-		$scope.message.text = "";
+		if ($scope.localQueue.length > 0)
+			$scope.showMessage();
+		else {
+			$scope.state = $scope.MESSAGE;
+			$scope.message.text = "";
+		}
 	};
 	
 	$scope.onReceiveMessage = function() {
-		$rootScope.$on('phonegapPush.notification', function(event, res) {
-			var index = res.data.indexOf(":");
-			var phone = res.data.substring(0, index);
-			var message = res.data.substring(index + 1, res.data.length);
-			$scope.model = FriendManager.getByPhone(phone);
-			$scope.message.text = message;
-    		$scope.state = $scope.RECEIVE;
-    		$scope.$apply();
+		$rootScope.$on('mqtt.notification', function(event, message) {
+			$scope.localQueue.push(message);
+			if ($scope.state != $scope.RECEIVE){
+				$scope.state = $scope.RECEIVE;
+				$scope.showMessage();
+			}
     	});
+	};
+
+	$scope.showMessage = function() {
+		while ($scope.localQueue.length > 0) {
+			var data = $scope.localQueue.shift();
+			var index = data.indexOf(":");
+			var phone = data.substring(0, index);
+			var message = data.substring(index + 1, data.length);
+			
+			var friend = FriendManager.getByPhone(phone);
+			if (friend) {
+				$scope.state = $scope.RECEIVE;
+				$scope.model = friend;
+				$scope.message.text = message;
+				$scope.$apply();
+				break;
+			}
+		}
 	};
 });

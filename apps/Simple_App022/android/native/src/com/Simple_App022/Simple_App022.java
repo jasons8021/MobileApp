@@ -12,10 +12,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
-
 import com.Simple_App022.MQService.MQBinder;
 import com.worklight.androidgap.WLDroidGap;
-
 import edu.ntut.csie.mqtt.plugin.LogUtil;
 
 public class Simple_App022 extends WLDroidGap {
@@ -29,7 +27,10 @@ public class Simple_App022 extends WLDroidGap {
 	private HandlerThread worker;
 	private Handler task;
 	private boolean isResume = false;
-
+	
+	/**
+     * onWLInitCompleted is called when the Worklight runtime framework initialization is complete
+     */
 	@Override
 	public void onWLInitCompleted(Bundle savedInstanceState) {
 		// Additional initialization code from onCreate() was moved here
@@ -42,7 +43,7 @@ public class Simple_App022 extends WLDroidGap {
 		// PushService.actionStart(getApplicationContext());
 
 	}
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -53,7 +54,7 @@ public class Simple_App022 extends WLDroidGap {
 		// 從未啟動狀態啟動時，不理會 Intent 訊息(MQTT訊息)
 		this.setIntent(new Intent());
 	}
-
+	
 	/**
 	 * 在onResume的過程中透過Thread必須關閉{@link StandAlongMQService}同時啓動{@link MQService}
 	 * ． 做在onResume是因為從背景轉前景及啟動程式都會執行onResume．
@@ -75,7 +76,7 @@ public class Simple_App022 extends WLDroidGap {
 /*			task.post(new Runnable() {
 				@Override
 				public void run() {
-					if (Simple_App022.this
+					if (Simple_App04.this
 							.stopService(new Intent(getApplicationContext(),
 									StandAlongMQService.class)) == false) {
 						LogUtil.d(TAG,
@@ -135,7 +136,7 @@ public class Simple_App022 extends WLDroidGap {
 
 		LogUtil.d(TAG, "Activity onResume finish............................");
 	}
-
+	
 	/**
 	 * onPause代表程式將離開前景，可能是關閉OR背景修眠，所以必須切換{@link MQService}成
 	 * {@link StandAlongMQService}．
@@ -168,13 +169,13 @@ public class Simple_App022 extends WLDroidGap {
 
 			@Override
 			public void run() {
-				Simple_App022.this.startService(new Intent(Simple_App022.this,
+				Simple_App04.this.startService(new Intent(Simple_App04.this,
 						StandAlongMQService.class));
 			}
 		});*/
 
 	}
-
+	
 	/**
 	 * 儲存從 Notification 發送的 Intent
 	 */
@@ -185,7 +186,7 @@ public class Simple_App022 extends WLDroidGap {
 		LogUtil.d(TAG, "Activity onNewIntent");
 		this.setIntent(intent);
 	}
-
+	
 	/**
 	 * 啓動系統需要的背後執行緒.
 	 */
@@ -209,7 +210,7 @@ public class Simple_App022 extends WLDroidGap {
 		// }
 		// });
 	}
-
+	
 	/**
 	 * MPORTAL內部介接{@link MQService}的{@link ServiceConnection}.
 	 * 
@@ -234,7 +235,7 @@ public class Simple_App022 extends WLDroidGap {
 		}
 
 	}
-
+	
 	private class MQConnectTask implements Runnable {
 
 		@Override
@@ -280,7 +281,7 @@ public class Simple_App022 extends WLDroidGap {
 		}
 
 	}
-
+	
 	/**
 	 * 讓MQServeice在收到MQ資訊時，可以回call的Java Script函式．
 	 * 
@@ -293,7 +294,7 @@ public class Simple_App022 extends WLDroidGap {
 		st.append(msg).append("');");
 		sendJavascript(st.toString());
 	}
-
+	
 	/**
 	 * 將MQTT連線狀態傳送到Javascript函式
 	 * 
@@ -304,7 +305,7 @@ public class Simple_App022 extends WLDroidGap {
 		st.append(connectStatus).append("');");
 		sendJavascript(st.toString());
 	}
-
+	
 	/**
 	 * 讓MQPlugin呼叫建立MQ連線的函式．
 	 * 
@@ -318,7 +319,7 @@ public class Simple_App022 extends WLDroidGap {
 		this.topic = topic;// 將客戶登入的clientId及UID暫存在Activity裡, 做為onResume重建連線用的.
 		task.post(connectMQ);
 	}
-
+	
 	/**
 	 * 讓MQPlugin呼叫，傳送TOPIC資訊到MQ的函式．
 	 * 
@@ -336,6 +337,7 @@ public class Simple_App022 extends WLDroidGap {
 			}
 		});
 	}
+
 }
 
 

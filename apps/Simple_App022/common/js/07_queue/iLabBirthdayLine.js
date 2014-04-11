@@ -1,4 +1,4 @@
-angular.module('iLabBirthdayLine', []).factory('iLabMessage', function ($http) {
+angular.module('iLabBirthdayLine', ['PhoneGap']).factory('iLabMessage', function ($http, $window, PhoneGap, $rootScope) {
 	var iLabServiceUrl = 'http://140.124.183.158:7828/api/Message';
 	
 	return {
@@ -22,6 +22,24 @@ angular.module('iLabBirthdayLine', []).factory('iLabMessage', function ($http) {
     		send.error(function(response, status, headers, config) {
     		    console.log("發送失敗，原因:"+response);
     		});
+        },
+        
+        resetCounter: function(phone) {
+            var reset = $http({
+                method: 'DELETE',
+                url: iLabServiceUrl,
+                params: {
+                    phone: phone
+                }
+            });
+            
+            reset.success(function(response, status, headers, config){
+                console.log("發送成功");
+            });
+            
+            reset.error(function(response, status, headers, config) {
+                console.log("發送失敗，原因:"+response);
+            });
         }
     };
 });

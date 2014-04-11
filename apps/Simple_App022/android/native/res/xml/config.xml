@@ -33,7 +33,7 @@
     <preference name="exit-on-suspend" value="false" />
     
 <plugins>
-	<plugin name="App" value="org.apache.cordova.App"/>
+		  <plugin name="App" value="org.apache.cordova.App"/>
     <plugin name="Geolocation" value="org.apache.cordova.GeoBroker"/>
     <plugin name="Device" value="org.apache.cordova.Device"/>
     <plugin name="Accelerometer" value="org.apache.cordova.AccelListener"/>
@@ -56,7 +56,6 @@
  	<plugin name="EmailComposer" value="org.apache.cordova.emailcomposer.EmailComposer"/>
 	<plugin name="Sms" value="org.apache.cordova.plugin.sms.Sms"/>
 	<plugin name="PushPlugin" value="com.plugin.gcm.PushPlugin"/>
-	<plugin name="MQTTPlugin" value="com.mqtt.plugin.MQTTPlugin" />
-</plugins>
-
+    <plugin name="MQTTPlugin" value="com.mqtt.plugin.MQTTPlugin"/>
+ </plugins>
 </cordova>
