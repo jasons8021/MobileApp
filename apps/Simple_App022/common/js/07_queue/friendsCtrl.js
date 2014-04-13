@@ -175,7 +175,7 @@ app.controller('FriendsCtrl', function($scope, FriendManager, Contacts, Notifica
 			var index = data.indexOf(":");
 			var phone = data.substring(0, index);
 			var message = data.substring(index + 1, data.length);
-			
+			// "0988825823", "receiverPhone": "0988824823", "message": "測試訊息", "time": "2014-04-13T22:55:44.5816418+08:00", "hasRead": false, "msgId": 1474 }
 			var friend = FriendManager.getByPhone(phone);
 			if (friend) {
 				$scope.state = $scope.RECEIVE;

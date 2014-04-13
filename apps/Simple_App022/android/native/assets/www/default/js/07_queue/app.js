@@ -18,6 +18,15 @@ app.config(function($stateProvider, $urlRouterProvider) {
                 }
             }
         })
+        .state('tab.add', {
+            url: '/add',
+            views: {
+                'tab-add': {
+                    templateUrl: 'templates/07_queue/add.html',
+                    controller: 'AddCtrl'
+                }
+            }
+        })
         .state('tab.setting', {
             url: '/setting',
             views: {
