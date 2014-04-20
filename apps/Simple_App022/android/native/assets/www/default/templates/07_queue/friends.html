@@ -35,10 +35,10 @@
 		    	<label class="item-input-wrapper" ng-show="state == MESSAGE || state == RECEIVE">
 		      		<input type="text" placeholder="請輸入訊息...." ng-model="message.text">
 		    	</label>
-	    		<button class="button button-positive" ng-click="onSendMessageClick()" ng-show="state == RECEIVE">
+	    		<button class="button button-positive" ng-click="onSendMessageClick()" ng-show="state == MESSAGE">
 		      		傳送
 		    	</button>
-		    	<button class="button button-positive" ng-click="onReceiveMessageClick()" ng-show="state == MESSAGE">
+		    	<button class="button button-positive" ng-click="onReceiveMessageClick()" ng-show="state == RECEIVE">
 		      		接收
 		    	</button>
 		    	<button ng-click="onCancelClick()" class="button button-positive" ng-show="state != RECEIVE">取消</button>

@@ -1,0 +1,31 @@
+<ion-view title="'訊息列表'" ng-init="init()">
+    <ion-content has-header="true" has-tabs="true">	  		
+		<div class="list">
+		    <div ng-show="getCount() == 0" class="item item-icon-left" >
+			    <i class="icon ion-person-stalker"></i>
+			    	聊天列表
+			    <div class="item item-text-wrap">
+			    	還沒有記錄，快去找個好友聊天吧！
+				</div>
+			</div>
+
+			<div ng-show="getCount() > 0" ng-repeat="messageLog in messageLogs track by messageLog.messageTime" class="item item-text-wrap">
+	            <div ng-click="onMessageClick()">
+		            <h2>{{messageLog.id}}</h2>
+		            <h2>{{messageLog.message}}</h2>
+		            <h2>{{messageLog.senderPhone}}</h2>
+		            <h2>{{messageLog.receiverPhone}}</h2>
+			    </div>
+		    </div>
+
+			<div ng-show="getCount() > 0" ng-repeat="dialog in dialogs" class="item item-divider">
+	            <div ng-click="onMessageClick()">
+		            <h2>dialog.id={{dialog.id}}</h2>
+		            <h2>dialog.message={{dialog.message}}</h2>
+		            <h2>dialog.senderPhone={{dialog.senderPhone}}</h2>
+		            <h2>dialog.receiverPhone={{dialog.receiverPhone}}</h2>
+			    </div>
+		    </div>
+		</div>
+    </ion-content>
+</ion-view>

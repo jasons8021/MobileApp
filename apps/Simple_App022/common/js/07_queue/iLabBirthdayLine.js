@@ -1,12 +1,12 @@
 angular.module('iLabBirthdayLine', ['PhoneGap']).factory('iLabMessage', function ($http, $window, PhoneGap, $rootScope) {
-	var iLabServiceUrl = 'http://140.124.183.158:7828/api/Message';
+	var iLabServiceUrl = 'http://iweb.csie.ntut.edu.tw:10080/apps22/api/Message';
 	
 	return {
     	sendMessage: function(senderPhone, receiverPhone, message) {
     		var messageData = {
-                SenderPhone: senderPhone,
-                ReceiverPhone: receiverPhone,
-                Message: message
+                senderPhone: senderPhone,
+                receiverPhone: receiverPhone,
+                messageContent: message
             };
     		
     		var send = $http({
@@ -16,7 +16,7 @@ angular.module('iLabBirthdayLine', ['PhoneGap']).factory('iLabMessage', function
             });
     		
     		send.success(function(response, status, headers, config){
-    			console.log("發送成功");
+    			console.log("發送成功,"+response);
     		});
     		
     		send.error(function(response, status, headers, config) {
@@ -45,7 +45,7 @@ angular.module('iLabBirthdayLine', ['PhoneGap']).factory('iLabMessage', function
 });
 
 angular.module('iLabBirthdayLine').factory('iLabMember', function ($rootScope, $window, $http) {
-	var iLabServiceUrl = 'http://140.124.183.158:7828/api/Member';
+	var iLabServiceUrl = 'http://iweb.csie.ntut.edu.tw:10080/apps22/api/Member';
 	
 	return {
         isMember: function(phone, onSuccess, onError) {
@@ -64,6 +64,7 @@ angular.module('iLabBirthdayLine').factory('iLabMember', function ($rootScope, $
 	    
 	    register: function(host, onSuccess, onError) {
 	    	var hostData = {
+                Name: host.name,
     			Phone: host.phone,
     			DeviceType: host.type,
     			DeviceToken: host.token

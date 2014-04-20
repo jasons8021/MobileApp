@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- PII admin facing -->
 <resources>
-  <string name="app_name">Simple_App022</string>  
-  <string name="push_notification_title">Simple_App022</string>
+  <string name="app_name">MidtermApp</string>  
+  <string name="push_notification_title">MidtermApp</string>
   
   <!-- General purpose strings -->
   <string name="error">Error</string>

@@ -1,0 +1,29 @@
+<ion-view title="'註冊'" ng-init="init()">
+	<ion-content has-header="true" padding="true">
+			<div class="list card">
+				<div class="list">
+					<label class="item item-input">
+					    <span class="input-label">姓名: </span>
+					    <input type="text" ng-model="host.name">
+					</label>
+					<label class="item item-input">
+					    <span class="input-label">電話: </span>
+					    <input type="tel" ng-model="host.phone">
+					</label>
+					<label class="item item-input">
+					    <span class="input-label">推播網路: </span>
+					    <input type="text" ng-disabled="true" ng-value="getNetwork()">
+					</label>
+				</div>
+			</div>
+			<div class="item item-text-wrap" ng-show="!host.token">
+			    請開啟網路已取得Token！
+			</div>
+			<a class="button button-positive" ng-show="state == UNREGISTERED && host.token" ng-click="onRegisterClick()">註冊</a>
+			
+			<a class="button button-positive" ng-show="state == REGISTERED" ng-click="onActionClick(DELETE)">刪除</a>
+			
+			<a class="button button-positive" ng-show="state == DELETE" ng-click="onDeleteClick()">確定</a>
+			<a class="button button-positive" ng-show="state == DELETE" ng-click="onCancelClick()">取消</a>
+	</ion-content>
+</ion-view>

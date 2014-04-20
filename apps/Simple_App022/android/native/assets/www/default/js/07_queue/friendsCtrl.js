@@ -143,6 +143,7 @@ app.controller('FriendsCtrl', function($scope, FriendManager, Contacts, Notifica
 	};
 	
 	$scope.onSendMessageClick = function() {
+		console.log("sender:"+SettingManager.getHost().phone+", receiver:"+$scope.model.phone+", message:"+$scope.message.text);
 		iLabMessage.sendMessage(SettingManager.getHost().phone, $scope.model.phone, $scope.message.text);
 		$scope.message.text = "";
 		$scope.state = $scope.BLESS;
