@@ -1,5 +1,5 @@
 <ion-view title="'訊息列表'" ng-init="init()">
-    <ion-content has-header="true" has-tabs="true">	  		
+    <ion-content has-header="true" has-tabs="true">	  	
 		<div class="list">
 		    <div ng-show="getCount() == 0" class="item item-icon-left" >
 			    <i class="icon ion-person-stalker"></i>
@@ -9,7 +9,7 @@
 				</div>
 			</div>
 
-			<div ng-show="getCount() > 0" ng-repeat="messageLog in messageLogs track by messageLog.messageTime" class="item item-text-wrap">
+			<!-- <div ng-show="getCount() > 0" ng-repeat="messageLog in messageLogs track by $index" class="item item-text-wrap">
 	            <div ng-click="onMessageClick()">
 		            <h2>{{messageLog.id}}</h2>
 		            <h2>{{messageLog.message}}</h2>
@@ -18,12 +18,21 @@
 			    </div>
 		    </div>
 
-			<div ng-show="getCount() > 0" ng-repeat="dialog in dialogs" class="item item-divider">
+			<div ng-show="getCount() > 0" ng-repeat="dialog in dialogs track by $index" class="item item-divider">
 	            <div ng-click="onMessageClick()">
 		            <h2>dialog.id={{dialog.id}}</h2>
 		            <h2>dialog.message={{dialog.message}}</h2>
 		            <h2>dialog.senderPhone={{dialog.senderPhone}}</h2>
 		            <h2>dialog.receiverPhone={{dialog.receiverPhone}}</h2>
+			    </div>
+		    </div> -->
+
+		    <div ng-show="getCount() > 0" ng-repeat="latestMessage in latestMessages track by $index" class="item item-text-wrap">
+	            <div ng-click="onMessageClick(latestMessage.id)">
+		            <!-- <h2>latestMessage.id={{latestMessage.id}}</h2> -->
+		            <h2>latestMessage.senderPhone={{latestMessage.senderPhone}}</h2>
+		            <p>latestMessage.message={{latestMessage.message}}</p>
+		            <!-- <h2>latestMessage.receiverPhone={{latestMessage.receiverPhone}}</h2> -->
 			    </div>
 		    </div>
 		</div>

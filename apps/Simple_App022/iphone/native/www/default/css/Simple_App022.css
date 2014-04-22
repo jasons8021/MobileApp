@@ -17,6 +17,48 @@ a, abbr, address, article, aside, audio, b, blockquote, body, canvas, caption, c
 	color : blue;
 	font-weight: bold;
 }
+
+.messages {
+	margin:0;
+	padding:0;
+	list-style-type:none;
+}
+
+.guestmessages {
+	display:block;
+	float:left;
+	clear:both;
+	max-width:65%;
+	margin:0 0 1rem 0;
+	padding:0;
+}
+
+.hostmessages{
+	display:block;
+	float:right;
+	clear:both;
+	max-width:65%;
+	margin:0 0 1rem 0;
+	padding:0;
+}
+
+.guestp {
+	border-radius:.75rem;
+	background:#e6e5eb;
+	color:#383641;
+	padding:.6875rem;
+	margin:0;
+	font-size:.875rem;
+}
+
+.hostp {
+	border-radius:.75rem;
+	background:#158ffe;
+	color:#fff;
+	padding:.6875rem;
+	margin:0;
+	font-size:.875rem;
+}
 /* Stylesheet content from css/Simple_App022.css in folder iphone */
 
 /* this CSS file extends the application CSS file found under common\css */

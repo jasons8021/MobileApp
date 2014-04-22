@@ -48,12 +48,22 @@ app.config(function($stateProvider, $urlRouterProvider) {
         .state('test', {
             url: "/test",
             templateUrl: "templates/midterm/test.html"
+        })
+        .state('editFriends', {
+            url: '/editFriends',
+            templateUrl: 'templates/midterm/editFriends.html',
+            controller: 'EditFriendsCtrl'
+        })
+        .state('chatRoom', {
+            url: '/chatRoom',
+            templateUrl: 'templates/midterm/chatRoom.html',
+            controller: 'ChatRoomCtrl'
         });
 
     $urlRouterProvider.otherwise("/tab/friends");
 });
 
-app.run(function(DBManager, SettingManager, PushNotificationsFactory, iLabMessage, $window, PhoneGap, $rootScope) {
+app.run(function(DBManager, SettingManager, MessageManager, PushNotificationsFactory, iLabMessage, $window, PhoneGap, $rootScope) {
     var host = SettingManager.getHost();
     
     PhoneGap.ready(function() {
@@ -64,9 +74,23 @@ app.run(function(DBManager, SettingManager, PushNotificationsFactory, iLabMessag
     });
     
     $window.receiveMessage = function(message) {
+        console.log("receiver message : " + message);
+        var deliveryMessage = {};
         if(message.indexOf(':') < 0)
             return;
-        $rootScope.$broadcast('mqtt.notification', message);
+        var splitedMessage = message.split(":");
+        // $rootScope.$broadcast('mqtt.notification', splitedMessage[1]+splitedMessage[2]);
+        console.log("receiver splitedMessage 0: " + splitedMessage[0]);
+        console.log("receiver splitedMessage 1: " + splitedMessage[1]);
+        console.log("receiver splitedMessage 2: " + splitedMessage[2]);
+        deliveryMessage.message = splitedMessage[2];
+        deliveryMessage.senderPhone = SettingManager.getHost().phone;
+        deliveryMessage.receiverPhone = splitedMessage[0];
+        deliveryMessage.messageTime = Date.now();
+
+        MessageManager.send(deliveryMessage);
+
+        $rootScope.$broadcast('mqtt.notification', splitedMessage[1]+splitedMessage[2]);
     };
     
     if (host.registered) {
@@ -87,3 +111,4 @@ app.run(function(DBManager, SettingManager, PushNotificationsFactory, iLabMessag
         SettingManager.setHost(host);
     });
 });
+

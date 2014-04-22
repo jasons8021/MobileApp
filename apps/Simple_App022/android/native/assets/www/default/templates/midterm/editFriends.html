@@ -1,0 +1,38 @@
+<ion-view title="'編輯好友'" left-buttons="backButton" ng-init="init()">
+    <ion-content has-header="true" has-tabs="true">
+	    <div class="list">
+	    	<label class="item item-input item-stacked-label">
+			    <span class="input-label">姓名: </span>
+			    <input type="text" ng-model="model.name">
+			</label>
+			<label class="item item-input item-stacked-label">
+			    <span class="input-label">電話: </span>
+			    <input type="tel" ng-model="model.phone">
+			</label>
+
+			<div class="item item-input-inset">
+				<button ng-click="onEditClick()" ng-show="state == EDIT" class="button button-positive">修改</button>
+				
+				<!-- <button ng-click="setFriendsFromContacts()" ng-show="state == ADDFRIEND" class="button button-positive">匯入聯絡人</button>
+				<button ng-show="state == ADDFRIEND" class="button button-positive">匯入FB朋友</button>
+				<button ng-show="state == ADDFRIEND" class="button button-positive">Q進朋友</button>
+				<button ng-show="state == ADDFRIEND" class="button button-positive">搖來朋友</button> -->
+				
+				<button ng-click="onSMSClick()" ng-show="state == BLESS" class="button button-positive">簡訊</button>
+				<button ng-click="onPhoneClick()" ng-show="state == BLESS" class="button button-positive">電話</button>
+				<button ng-click="onMessageClick()" ng-disabled="!model.isMember" ng-show="state == BLESS" class="button button-positive">訊息</button>
+				<!-- <button ng-click="onEmailClick()" ng-show="state == BLESS" ng-disabled="!model.email" class="button button-positive">郵件</button> -->
+		    	<label class="item-input-wrapper" ng-show="state == MESSAGE || state == RECEIVE">
+		      		<input type="text" placeholder="請輸入訊息...." ng-model="message.text">
+		    	</label>
+	    		<button class="button button-positive" ng-click="onSendMessageClick()" ng-show="state == MESSAGE">
+		      		傳送
+		    	</button>
+		    	<button class="button button-positive" ng-click="onReceiveMessageClick()" ng-show="state == RECEIVE">
+		      		接收
+		    	</button>
+		    	<button ng-click="onCancelClick()" class="button button-positive" ng-show="state != RECEIVE">取消</button>
+	  		</div>
+  		</div>
+    </ion-content>
+</ion-view>

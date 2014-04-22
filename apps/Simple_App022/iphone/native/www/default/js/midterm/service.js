@@ -41,10 +41,10 @@ app.factory('DBManager', function($window, PhoneGap) {
         	});
         },
         
-        deleteFriend: function (friend, onSuccess, onError) {
+        deleteFriend: function (friendID, onSuccess, onError) {
         	PhoneGap.ready(function() {
 	            db.transaction(function(tx) {
-	                tx.executeSql("delete from friends where id = ?", [friend.id],
+	                tx.executeSql("delete from friends where id = ?", [friendID],
 	                	onSuccess,
 	                    onError
 	                );
@@ -102,25 +102,17 @@ app.factory('DBManager', function($window, PhoneGap) {
     				);
             	});
             });
-        }
-
-        // getDialog: function (senderPhone, receiverPhone, onSuccess, onError) {
-        // 	PhoneGap.ready(function() {
-        // 		db.transaction(function(tx) {
-        // 			tx.executeSql("SELECT * FROM messageLog where (senderPhone = ? and receiverPhone = ?) OR (senderPhone = ? and receiverPhone = ?)", 
-        // 				[senderPhone, receiverPhone, receiverPhone, senderPhone],
-	       //  			onSuccess,
-        // 				onError
-    				// );
-        //     	});
-        //     });
-        // }
+        },
     };
 });
 
-app.factory('FriendManager', function(DBManager, iLabMember) {
+app.factory('FriendManager', function(DBManager, iLabMember, $window) {
 	var idIndexedFriends = {};
 	var phoneIndexedFriends = {};
+
+	if (!$window.localStorage['friend'])
+		$window.localStorage['friend'] = "{}";
+
 	DBManager.getFriends(function(tx, res) {
 		for (var i = 0, max = res.rows.length; i < max; i++) {
 			idIndexedFriends[res.rows.item(i).id] = res.rows.item(i);
@@ -160,9 +152,9 @@ app.factory('FriendManager', function(DBManager, iLabMember) {
 				}, onError);
 			});
 		},
-		remove: function(friend, onSuccess, onError) {
-			DBManager.deleteFriend(friend, function() {
-				delete idIndexedFriends[friend.id];
+		remove: function(friendID, onSuccess, onError) {
+			DBManager.deleteFriend(friendID, function() {
+				delete idIndexedFriends[friendID];
 			}, onError);
 		},
 		getById: function(id) {
@@ -184,6 +176,12 @@ app.factory('FriendManager', function(DBManager, iLabMember) {
 		},
 		count: function() {
 			return Object.keys(idIndexedFriends).length;
+		},
+		setFriend: function(friend) {
+			$window.localStorage['friend'] = JSON.stringify(friend);
+		},
+		getFriend: function() {
+			return JSON.parse($window.localStorage['friend']);
 		}
 	};
   
@@ -202,14 +200,32 @@ app.factory('SettingManager', function($window) {
 	};
 });
 
-app.factory('MessageManager', function(DBManager, FriendManager) {
+function getSRDialog(senderPhone, receiverPhone, idIndexedMessage) {
+	var idIndexedDialog = {};
+  	for (var mid in idIndexedMessage) {
+		// console.log("check idIndexedMessage id : " + idIndexedMessage[mid].id);
+		if((idIndexedMessage[mid].senderPhone == senderPhone && idIndexedMessage[mid].receiverPhone == receiverPhone) ||
+		  (idIndexedMessage[mid].senderPhone == receiverPhone && idIndexedMessage[mid].receiverPhone == senderPhone))
+		{ 
+			idIndexedDialog[mid] = idIndexedMessage[mid];
+			// console.log("getDialog.message = " + idIndexedMessage[mid].message);
+		}
+	}
+	return idIndexedDialog;
+}
+
+app.factory('MessageManager', function(DBManager, FriendManager, SettingManager, iLabMember, $window) {
 	var idIndexedMessage = {};
 	var idIndexedDialog = {};
 	var idIndexedLatestMessage = {};
+
+	if (!$window.localStorage['HGPhone'])
+		$window.localStorage['HGPhone'] = "{}";
+
 	DBManager.getMessage(function(tx, res) {
 		for (var i = 0, max = res.rows.length; i < max; i++) {
 			idIndexedMessage[res.rows.item(i).id] = res.rows.item(i);
-			console.log("getMessage.id = " + idIndexedMessage[res.rows.item(i).id].id);
+			// console.log("getMessage.id = " + idIndexedMessage[res.rows.item(i).id].id);
 		}
 	});
 	return {
@@ -234,25 +250,28 @@ app.factory('MessageManager', function(DBManager, FriendManager) {
 			return Object.keys(idIndexedMessage).length;
 		},
 		getDialog: function(senderPhone, receiverPhone) {
-			for (var mid in idIndexedMessage) {
-				console.log("check idIndexedMessage id : " + idIndexedMessage[mid].id);
-				if((idIndexedMessage[mid].senderPhone == senderPhone && idIndexedMessage[mid].receiverPhone == receiverPhone) ||
-				   (idIndexedMessage[mid].senderPhone == receiverPhone && idIndexedMessage[mid].receiverPhone == senderPhone))
-				{ 
-					idIndexedDialog[mid] = idIndexedMessage[mid];
-					console.log("getDialog.message = " + idIndexedMessage[mid].message);
-				}
-			}
-			
-			return idIndexedDialog;
+			return getSRDialog(senderPhone, receiverPhone, idIndexedMessage);
 		},
 		getLatestMessage: function() {
 			var friendList = FriendManager.list();
+
 			for (var fid in friendList) {
-				console.log("getLatestMessage() friendList phone : " + friendList[fid].phone);
+					if (friendList[fid].isMember) {
+					var tempDialog = getSRDialog(SettingManager.getHost().phone, friendList[fid].phone, idIndexedMessage);
+					// Object.keys(tempDialog).length-1 是指在hash table的key set最後一個key, 例如[1,3,5,7], 最後一個就是7
+					// console.log("fid : " + fid + ", getLatestMessage() tempDialog Object.keys last key : " + Object.keys(tempDialog)[Object.keys(tempDialog).length-1]);
+					idIndexedLatestMessage[Object.keys(tempDialog)[Object.keys(tempDialog).length-1]] = tempDialog[Object.keys(tempDialog)[Object.keys(tempDialog).length-1]];
+					// console.log("getLatestMessage() tempDialog id(message id) : " + tempDialog[Object.keys(tempDialog)[Object.keys(tempDialog).length-1]].id);
+				};
 			}
+
 			return idIndexedLatestMessage;
+		},
+		setHGPhone: function(HGPhone) {
+			$window.localStorage['HGPhone'] = JSON.stringify(HGPhone);
+		},
+		getHGPhone: function() {
+			return JSON.parse($window.localStorage['HGPhone']);
 		}
 	};
-  
 });
