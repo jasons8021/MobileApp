@@ -3,8 +3,8 @@ app.factory('DBManager', function($window, PhoneGap) {
     PhoneGap.ready(function() {
         db = $window.sqlitePlugin.openDatabase({name: "MidtermAppDB"});
         db.transaction(function(tx) {
-            tx.executeSql("CREATE TABLE IF NOT EXISTS friends(id INTEGER PRIMARY KEY ASC, name TEXT, phone TEXT UNIQUE, isMember BOOLEAN)", []);
-            tx.executeSql("CREATE TABLE IF NOT EXISTS messageLog(id INTEGER PRIMARY KEY ASC, message TEXT, senderPhone TEXT , receiverPhone TEXT, messageTime DATE)", []);
+            tx.executeSql("CREATE TABLE IF NOT EXISTS friends(id INTEGER PRIMARY KEY ASC, name TEXT, phone TEXT UNIQUE, email TEXT, birthday DATE, isMember BOOLEAN)", []);
+            tx.executeSql("CREATE TABLE IF NOT EXISTS messageLog(MsgId INTEGER PRIMARY KEY ASC, message TEXT, senderPhone TEXT , receiverPhone TEXT, messageTime DATE, hasRead BOOLEAN)", []);
         });
     });
     
@@ -12,8 +12,8 @@ app.factory('DBManager', function($window, PhoneGap) {
         addFriend: function (friend, onSuccess, onError) {
         	PhoneGap.ready(function() {
 	            db.transaction(function(tx) {
-	                tx.executeSql("INSERT INTO friends(name, phone, isMember) VALUES (?, ?, ?)",
-	                    [friend.name, friend.phone, friend.isMember],
+	                tx.executeSql("INSERT INTO friends(name, phone, email, birthday, isMember) VALUES (?, ?, ?, ?, ?)",
+	                    [friend.name, friend.phone, friend.email, friend.birthday, friend.isMember],
 	                    function(tx, res) {
 	                		friend.id = res.insertId;
 	                        (onSuccess || angular.noop)();
@@ -30,8 +30,8 @@ app.factory('DBManager', function($window, PhoneGap) {
         updateFriend: function (friend, onSuccess, onError) {
         	PhoneGap.ready(function() {
 	            db.transaction(function (tx) {
-	                tx.executeSql("UPDATE friends SET name = ?, phone = ?, isMember = ? where id = ?",
-	                    [friend.name, friend.phone, friend.isMember, friend.id],
+	                tx.executeSql("UPDATE friends SET name = ?, phone = ?, email = ?, birthday = ?, isMember = ? where id = ?",
+	                    [friend.name, friend.phone, friend.email, friend.birthday, friend.isMember, friend.id],
 	                    onSuccess,
 	                    onError
 	                );
@@ -61,18 +61,17 @@ app.factory('DBManager', function($window, PhoneGap) {
             });
         },
 
-        sendMessage: function (deliveryMessage, onSuccess, onError) {
+        saveMessage: function (messageLog, onSuccess, onError) {
         	PhoneGap.ready(function() {
 	            db.transaction(function(tx) {
-	                tx.executeSql("INSERT INTO messageLog(message, senderPhone, receiverPhone, messageTime) VALUES (?, ?, ?, ?)",
-	                    [deliveryMessage.message, deliveryMessage.senderPhone, deliveryMessage.receiverPhone, deliveryMessage.messageTime],
+	                tx.executeSql("INSERT INTO messageLog(MsgId, message, senderPhone, receiverPhone, messageTime, hasRead) VALUES (?, ?, ?, ?, ?, ?)",
+	                    [messageLog.MsgId, messageLog.message, messageLog.senderPhone, messageLog.receiverPhone, messageLog.messageTime, messageLog.hasRead],
 	                    function(tx, res) {
-	                		deliveryMessage.id = res.insertId;
-	                		console.log("MessageManager.sendMessage成功，訊息：" + deliveryMessage.message + "MessageManager.receiverPhone：" + deliveryMessage.receiverPhone);
+	                		console.log("DB saveMessage 成功，訊息：" + messageLog.message + ", messageLog.MsgId" + messageLog.MsgId + ", MessageManager.receiverPhone：" + messageLog.receiverPhone + ", MessageManager.hasRead" + messageLog.hasRead);
 	                        (onSuccess || angular.noop)();
 	                    }, function (e) {
-	                        console.log('MessageManager.sendMessage失敗，原因: ' + e.message);
-	    	            	console.log(JSON.stringify(deliveryMessage));
+	                        console.log('DB saveMessage 失敗，原因: ' + e.message);
+	    	            	console.log(JSON.stringify(messageLog));
 	                        (onError || angular.noop)(e);
 	                    }
 	                );
@@ -80,10 +79,25 @@ app.factory('DBManager', function($window, PhoneGap) {
         	});
         },
 
-        deleteMessage: function (deliveryMessage, onSuccess, onError) {
+        readMessage: function (messageLog, onSuccess, onError) {
+        	PhoneGap.ready(function() {
+	            db.transaction(function (tx) {
+	                tx.executeSql("UPDATE messageLog SET hasRead = ? where MsgId = ?",
+	                	[true, messageLog.MsgId],
+	                    function(tx, res) {
+	                		messageLog.hasRead = true;
+	                        (onSuccess || angular.noop)();
+	                    },
+	                    onError
+	                );
+	            });
+        	});
+        },
+
+        deleteMessage: function (messageLog, onSuccess, onError) {
         	PhoneGap.ready(function() {
 	            db.transaction(function(tx) {
-	                tx.executeSql("delete from messageLog where id = ?", [deliveryMessage.id],
+	                tx.executeSql("delete from messageLog where MsgId = ?", [messageLog.MsgId],
 	                	onSuccess,
 	                    onError
 	                );
@@ -101,6 +115,17 @@ app.factory('DBManager', function($window, PhoneGap) {
             	});
             });
         },
+
+        getMessageById: function (messageLogId, onSuccess, onError) {
+        	PhoneGap.ready(function() {
+        		db.transaction(function(tx) {
+        			tx.executeSql("SELECT * FROM messageLog where MsgId = ?", [messageLogId],
+	        			onSuccess,
+        				onError
+    				);
+            	});
+            });
+        }
     };
 });
 
@@ -114,7 +139,7 @@ app.factory('FriendManager', function(DBManager, iLabMember, $window) {
 	DBManager.getFriends(function(tx, res) {
 		for (var i = 0, max = res.rows.length; i < max; i++) {
 			idIndexedFriends[res.rows.item(i).id] = res.rows.item(i);
-			console.log(idIndexedFriends[res.rows.item(i).id].isMember);
+			console.log("isMember = " + idIndexedFriends[res.rows.item(i).id].isMember);
 		}
 	});
 	return {
@@ -198,78 +223,86 @@ app.factory('SettingManager', function($window) {
 	};
 });
 
-function getSRDialog(senderPhone, receiverPhone, idIndexedMessage) {
-	var idIndexedDialog = {};
-  	for (var mid in idIndexedMessage) {
-		// console.log("check idIndexedMessage id : " + idIndexedMessage[mid].id);
-		if((idIndexedMessage[mid].senderPhone == senderPhone && idIndexedMessage[mid].receiverPhone == receiverPhone) ||
-		  (idIndexedMessage[mid].senderPhone == receiverPhone && idIndexedMessage[mid].receiverPhone == senderPhone))
-		{ 
-			idIndexedDialog[mid] = idIndexedMessage[mid];
-			// console.log("getDialog.message = " + idIndexedMessage[mid].message);
+app.factory('ChatManager', function(DBManager, SettingManager) {
+
+	var messageLogs = {};
+	var host = SettingManager.getHost();
+	var unlogMsgIds = {};
+
+	var getPhone = function(message) {
+		if (message.senderPhone == host.phone)
+			return message.receiverPhone;
+		return message.senderPhone;
+	};
+	var checkMessage = function(message) {
+		var result = null;
+		var phone = getPhone(message);
+		var chatMessages = messageLogs[phone];
+		for (var i in chatMessages) {
+			if (chatMessages[i].MsgId == message.MsgId)
+				result = chatMessages[i];
 		}
-	}
-	return idIndexedDialog;
-}
-
-app.factory('MessageManager', function(DBManager, FriendManager, SettingManager, iLabMember, $window) {
-	var idIndexedMessage = {};
-	var idIndexedDialog = {};
-	var idIndexedLatestMessage = {};
-
-	if (!$window.localStorage['HGPhone'])
-		$window.localStorage['HGPhone'] = "{}";
-
+		return result;
+	};
 	DBManager.getMessage(function(tx, res) {
+		console.log('ChatManager host: ' + host.phone);
 		for (var i = 0, max = res.rows.length; i < max; i++) {
-			idIndexedMessage[res.rows.item(i).id] = res.rows.item(i);
-			// console.log("getMessage.id = " + idIndexedMessage[res.rows.item(i).id].id);
+			console.log(JSON.stringify(res.rows.item(i)));
+			res.rows.item(i).hasRead = JSON.parse(res.rows.item(i).hasRead);
+			var phone = getPhone(res.rows.item(i));
+			console.log('ChatManager phone: ' + phone);
+			if(!messageLogs[phone])
+				messageLogs[phone] = [];
+			messageLogs[phone].push(res.rows.item(i));
+			if(messageLogs[phone])
+				console.log('ChatManager messageLogs[phone]: ' + messageLogs[phone].message);
 		}
 	});
 	return {
-		send: function(deliveryMessage, onSuccess, onError) {
-			DBManager.sendMessage(deliveryMessage, function() {
-				idIndexedMessage[deliveryMessage.id] = deliveryMessage;
-				(onSuccess || angular.noop)();
+		getFriendPhone: getPhone,
+		send: function(message, onSuccess, onError) {
+			if (unlogMsgIds[message.MsgId]) {
+				console.log('take unlogMsgIds' + message.MsgId);
+				message.hasRead = true;
+				delete unlogMsgIds[message.MsgId];
+			}
+			DBManager.saveMessage(message, function() {
+				console.log('chatManager add 成功: ' + JSON.stringify(message));
+				var phone = getPhone(message);
+				if (!messageLogs[phone])
+					messageLogs[phone] = [];
+				messageLogs[phone].push(message);
+                (onSuccess || angular.noop)();
 			}, onError);
 		},
-		remove: function(deliveryMessage, onSuccess, onError) {
-			DBManager.deleteMessage(deliveryMessage, function() {
-				delete idIndexedMessage[deliveryMessage.id];
-			}, onError);
+		read : function(message, onSuccess, onError) {
+			console.log('db read');
+			var MsgId = message.MsgId;
+			message = checkMessage(message);
+			if (!message) {
+				console.log('unlogMsgIds' + MsgId);
+				unlogMsgIds[MsgId] = true;
+				return;
+			}
+			DBManager.readMessage(message, function() {console.log('db success');}, onError);
 		},
-		getById: function(id) {
-			return idIndexedMessage[id];
+		remove: function(phone, onSuccess, onError) {
+			DBManager.deleteMessage(phone, function() {
+				delete messageLogs[phone];
+                (onSuccess || angular.noop)();
+			}, onError);
 		},
 		list: function() {
-			return idIndexedMessage;
+			return messageLogs;
+		},
+		get: function(phone) {
+			if (!messageLogs[phone])
+				messageLogs[phone] = [];
+			return messageLogs[phone];
 		},
 		count: function() {
-			return Object.keys(idIndexedMessage).length;
-		},
-		getDialog: function(senderPhone, receiverPhone) {
-			return getSRDialog(senderPhone, receiverPhone, idIndexedMessage);
-		},
-		getLatestMessage: function() {
-			var friendList = FriendManager.list();
-
-			for (var fid in friendList) {
-					if (friendList[fid].isMember) {
-					var tempDialog = getSRDialog(SettingManager.getHost().phone, friendList[fid].phone, idIndexedMessage);
-					// Object.keys(tempDialog).length-1 是指在hash table的key set最後一個key, 例如[1,3,5,7], 最後一個就是7
-					// console.log("fid : " + fid + ", getLatestMessage() tempDialog Object.keys last key : " + Object.keys(tempDialog)[Object.keys(tempDialog).length-1]);
-					idIndexedLatestMessage[Object.keys(tempDialog)[Object.keys(tempDialog).length-1]] = tempDialog[Object.keys(tempDialog)[Object.keys(tempDialog).length-1]];
-					// console.log("getLatestMessage() tempDialog id(message id) : " + tempDialog[Object.keys(tempDialog)[Object.keys(tempDialog).length-1]].id);
-				};
-			}
-
-			return idIndexedLatestMessage;
-		},
-		setHGPhone: function(HGPhone) {
-			$window.localStorage['HGPhone'] = JSON.stringify(HGPhone);
-		},
-		getHGPhone: function() {
-			return JSON.parse($window.localStorage['HGPhone']);
+			return Object.keys(messageLogs).length;
 		}
+		
 	};
 });

@@ -25,10 +25,11 @@ MQTTPlugin.prototype.SEND_MSG = function(onSuccess, onFailure, topic, msg){
 	cordova.exec(onSuccess, onFailure, "MQTTPlugin", "SEND_MSG", [topic, msg]);
 };
 
+
 if(!window.plugins) { 
 	window.plugins = {}; 
 } 
 
 if (!window.plugins.mqttMessage) { 
-	window.plugins.MQTTPlugin = new MQTTPlugin(); 
+	window.plugins.MQTTPlugin = new MQTTPlugin();
 }

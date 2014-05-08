@@ -4,26 +4,45 @@ angular.module('midtermApp', ['PhoneGap']).factory('iLabMessage', function ($htt
 	var iLabServiceUrl = 'http://iweb.csie.ntut.edu.tw:10080/apps22/api/Message';
 	
 	return {
-    	sendMessage: function(senderPhone, receiverPhone, message) {
-    		var messageData = {
-                senderPhone: senderPhone,
-                receiverPhone: receiverPhone,
-                messageContent: message
-            };
+    	sendMessage: function(deliveryMessage, onSucess) {
+    		// var messageData = {
+      //           senderPhone: senderPhone,
+      //           receiverPhone: receiverPhone,
+      //           message: message
+      //       };
     		
     		var send = $http({
                 method: 'POST',
                 url: iLabServiceUrl,
-                data: messageData
+                data: deliveryMessage
             });
     		
     		send.success(function(response, status, headers, config){
     			console.log("sendMessage發送成功，原因:"+response);
+                (onSucess || angular.noop)(response);
     		});
     		
     		send.error(function(response, status, headers, config) {
     		    console.log("sendMessage發送失敗，原因:"+response);
     		});
+        },
+
+        readMessage: function(msgId) {
+            var send = $http({
+                method: 'PUT',
+                url: iLabServiceUrl,
+                params: {
+                    messageLogID: msgId
+                }
+            });
+            
+            send.success(function(response, status, headers, config){
+                console.log("接收成功: " + response);
+            });
+            
+            send.error(function(response, status, headers, config) {
+                console.log("接收失敗，原因:"+response);
+            });
         },
         
         resetCounter: function(phone) {
@@ -36,7 +55,7 @@ angular.module('midtermApp', ['PhoneGap']).factory('iLabMessage', function ($htt
             });
             
             reset.success(function(response, status, headers, config){
-                console.log("resetCounter發送成功，原因:"+response);
+                console.log("resetCounter發送成功");
             });
             
             reset.error(function(response, status, headers, config) {

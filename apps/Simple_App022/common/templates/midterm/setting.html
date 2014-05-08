@@ -11,19 +11,39 @@
 					    <input type="tel" ng-model="host.phone">
 					</label>
 					<label class="item item-input">
+					    <span class="input-label">郵件: </span>
+					    <input type="email" ng-model="host.email">
+					</label>
+					<label class="item item-input">
+					    <span class="input-label">生日: </span>
+					    <input type="date" ng-model="host.birthday">
+					</label>
+					<label class="item item-input">
 					    <span class="input-label">推播網路: </span>
 					    <input type="text" ng-disabled="true" ng-value="getNetwork()">
 					</label>
 				</div>
+				<div class="item item-text-wrap" ng-show="!host.token">
+			    	請開啟網路已取得Token！
+				</div>
+				<a class="button button-positive" ng-show="state == UNREGISTERED && host.token" ng-click="onRegisterClick()">註冊</a>
+				
+				<a class="button button-positive" ng-show="state == REGISTERED" ng-click="onActionClick(DELETE)">刪除</a>
+				
+				<a class="button button-positive" ng-show="state == DELETE" ng-click="onDeleteClick()">確定</a>
+				<a class="button button-positive" ng-show="state == DELETE" ng-click="onCancelClick()">取消</a>
 			</div>
-			<div class="item item-text-wrap" ng-show="!host.token">
-			    請開啟網路已取得Token！
-			</div>
-			<a class="button button-positive" ng-show="state == UNREGISTERED && host.token" ng-click="onRegisterClick()">註冊</a>
 			
-			<a class="button button-positive" ng-show="state == REGISTERED" ng-click="onActionClick(DELETE)">刪除</a>
-			
-			<a class="button button-positive" ng-show="state == DELETE" ng-click="onDeleteClick()">確定</a>
-			<a class="button button-positive" ng-show="state == DELETE" ng-click="onCancelClick()">取消</a>
+			<div class="list card">
+				<label class="item item-input">
+				    <span class="input-label">官方名稱: </span>
+				    <input type="text" ng-change="onPublisherNameChange()" ng-model="host.publisherName" placeholder="請設定">
+				</label>
+				<label class="item item-input">
+				    <span class="input-label">官方識別碼: </span>
+				    <input type="tel" ng-change="onPublisherIdChange()" ng-model="host.publisherId" placeholder="請設定">
+				</label>
+				<a class="button button-positive" ng-click="onSubscribeClick()">訂閱</a>
+			</div>	
 	</ion-content>
 </ion-view>

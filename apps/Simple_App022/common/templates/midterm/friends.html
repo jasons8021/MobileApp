@@ -11,7 +11,7 @@
 			
 		    <div ng-show="getCount() > 0" ng-repeat="friend in friends track by $index" ng-if="friend.isMember" class="item item-icon-left item-icon-right">
 		    	<i class="icon ion-edit" ng-click="onEditClick(friend)"></i>
-                <div ng-click="onFriendClick(friend)">
+                <div ng-click="toURL('#/chat/' + friend.phone)">
 	                <h2 ng-class="friend.isMember ? 'member' : ''">{{friend.name}}</h2>
 	                <p>{{friend.phone}}</p>
 			    </div>

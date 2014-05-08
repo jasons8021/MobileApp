@@ -59,6 +59,27 @@ a, abbr, address, article, aside, audio, b, blockquote, body, canvas, caption, c
 	margin:0;
 	font-size:.875rem;
 }
+
+#map-canvas {
+   	height: 400px;
+}
+
+.labels {
+   color: red;
+   background-color: white;
+   font-family: "Lucida Grande", "Arial", sans-serif;
+   font-size: 10px;
+   font-weight: bold;
+   text-align: center;
+   width: 60px;     
+   border: 2px solid black;
+   white-space: nowrap;
+}
+
+.higherItem{
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
 /* Stylesheet content from css/Simple_App022.css in folder iphone */
 
 /* this CSS file extends the application CSS file found under common\css */

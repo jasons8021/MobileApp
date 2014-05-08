@@ -301,7 +301,7 @@ public class Simple_App022 extends WLDroidGap {
 	 * @param connectStatus
 	 */
 	public void sendMqttConnectionStatus(String connectStatus) {
-		StringBuilder st = new StringBuilder("receiveMessage('");
+		StringBuilder st = new StringBuilder("connectStatus('");
 		st.append(connectStatus).append("');");
 		sendJavascript(st.toString());
 	}

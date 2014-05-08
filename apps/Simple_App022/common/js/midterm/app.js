@@ -43,54 +43,92 @@ app.config(function($stateProvider, $urlRouterProvider) {
                 }
             }
         })
-        .state('test', {
-            url: "/test",
-            templateUrl: "templates/midterm/test.html"
+        .state('tab.publish', {
+            url: '/publish',
+            views: {
+                'tab-publish': {
+                    templateUrl: 'templates/midterm/publish.html',
+                    controller: 'PublishCtrl'
+                }
+            }
         })
         .state('editFriends', {
             url: '/editFriends',
             templateUrl: 'templates/midterm/editFriends.html',
             controller: 'EditFriendsCtrl'
         })
-        .state('chatRoom', {
-            url: '/chatRoom',
-            templateUrl: 'templates/midterm/chatRoom.html',
-            controller: 'ChatRoomCtrl'
+        .state('chat', {
+            url: '/chat/:phone',
+            templateUrl: 'templates/midterm/chat.html',
+            controller: 'ChatCtrl'
+        })
+        .state('map', {
+            url: '/map?latitude&longitude&friendName&isMe',
+            templateUrl: 'templates/midterm/map.html',
+            controller: 'MapCtrl'
         });
 
     $urlRouterProvider.otherwise("/tab/friends");
 });
 
-app.run(function(DBManager, SettingManager, MessageManager, PushNotificationsFactory, iLabMessage, $window, PhoneGap, $rootScope) {
+app.filter('fromNow', function() {
+    return function(dateString) {
+        return moment(dateString).fromNow();
+    };
+});
+
+app.filter('removeLocation', function() {
+    return function(messageString) {
+        var result = messageString.replace(/^\([0-9.]+,[0-9.]+\)/, '');
+        if (!result)
+            return '顯示地圖';
+        return result;
+    };
+});
+
+app.run(function(DBManager, SettingManager, PushNotificationsFactory, iLabMessage, $window, PhoneGap, $rootScope, FriendManager, ChatManager) {
     var host = SettingManager.getHost();
     
     PhoneGap.ready(function() {
-        if(host.phone)
-        $window.document.addEventListener("pause", function(){
-            iLabMessage.resetCounter(host.phone);
-        }, false);
+        if(host.phone){
+            $window.document.addEventListener("pause", function(){
+                iLabMessage.resetCounter(host.phone);
+            }, false);
+        }
     });
     
-    $window.receiveMessage = function(message) {
-        console.log("receiver message : " + message);
-        var deliveryMessage = {};
-        if(message.indexOf(':') < 0)
+    $window.receiveMessage = function(payload) {
+        console.log('收到一則新訊息: ' + payload);
+        var message = JSON.parse(payload);
+        if(!message)
+        {
+            console.log('message is null');
             return;
-        var splitedMessage = message.split(":");
-        // $rootScope.$broadcast('mqtt.notification', splitedMessage[1]+splitedMessage[2]);
-        console.log("receiver splitedMessage 0: " + splitedMessage[0]);
-        console.log("receiver splitedMessage 1: " + splitedMessage[1]);
-        console.log("receiver splitedMessage 2: " + splitedMessage[2]);
-        deliveryMessage.message = splitedMessage[2];
-        deliveryMessage.senderPhone = SettingManager.getHost().phone;
-        deliveryMessage.receiverPhone = splitedMessage[0];
-        deliveryMessage.messageTime = Date.now();
+        }
+        console.log('receiveMessage : payload拆解出來的message訊息' + message);
+        //var friend = FriendManager.getByPhone(ChatManager.getFriendPhone(message));
+        var friend = FriendManager.getByPhone(message.senderPhone);
+        console.log('receiveMessage : senderPhone: ' + message.senderPhone);
+        if (friend)
+            console.log('receiveMessage : friend.name: ' + friend.name);
 
-        MessageManager.send(deliveryMessage);
-
-        $rootScope.$broadcast('mqtt.notification', splitedMessage[1]+splitedMessage[2]);
+        if (friend || host.phone == message.senderPhone  || host.publisherId == message.senderPhone) {
+            console.log('receiveMessage:' + message.message + ' ,  hasRead:' + message.hasRead);
+            if (!message.hasRead){          
+                ChatManager.send(message, function() {
+                    $rootScope.$broadcast('receivedMessage',message);
+                    $rootScope.$apply();
+                });
+            }
+            else {
+                ChatManager.read(message, function() {
+                    $rootScope.$broadcast('receivedMessage',message);
+                    $rootScope.$apply();
+                });
+            }
+        } else console.log('receiveMessage: 沒朋友');
     };
-    
+
     if (host.registered) {
         PhoneGap.ready(function() {     
             $window.plugins.MQTTPlugin.CONNECT(angular.noop, angular.noop, host.phone, host.phone);
@@ -108,5 +146,6 @@ app.run(function(DBManager, SettingManager, MessageManager, PushNotificationsFac
             host.type = 1;
         SettingManager.setHost(host);
     });
+    
+    moment.lang('zh-tw');
 });
-

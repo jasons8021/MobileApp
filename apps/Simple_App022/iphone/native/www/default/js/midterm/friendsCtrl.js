@@ -1,23 +1,8 @@
 
 /* JavaScript content from js/midterm/friendsCtrl.js in folder common */
-app.controller('FriendsCtrl', function($scope, FriendManager, Contacts, Notification, $window, $ionicLoading, SettingManager, MessageManager, $http, $rootScope, $ionicScrollDelegate, iLabMember, iLabMessage, $location) {
-	$scope.CREATE = 0;
-	$scope.EDIT = 1;
-	$scope.DELETE = 2;
-	$scope.BLESS = 3;
-	$scope.MESSAGE = 4;
-	$scope.ADDFRIEND = 5;
-	$scope.RECEIVE = 6;
-	$scope.state = $scope.CREATE;
-
-	$scope.model = {};
-	$scope.message = {};
-	$scope.message.text = "";
+app.controller('FriendsCtrl', function($scope, FriendManager, $window, $ionicLoading, $http, $rootScope, $location) {
 	$scope.friends = null;
 	$scope.localQueue = new Array();
-
-	// h : 自己、g : 對方
-	$scope.hgPhone = {};
 
 	$scope.init = function() {
 		$scope.friends = FriendManager.list();
@@ -51,18 +36,14 @@ app.controller('FriendsCtrl', function($scope, FriendManager, Contacts, Notifica
 	$scope.getCount = function() {
 		return FriendManager.count();
 	};
-	
-	$scope.onFriendClick = function(friend) {
-		$scope.hgPhone.hostPhone = SettingManager.getHost().phone;
-		$scope.hgPhone.guestPhone = friend.phone;
-
-		MessageManager.setHGPhone($scope.hgPhone);
-		$location.url('/chatRoom');
-	};
 
 	$scope.onEditClick = function(friend) {
 		FriendManager.setFriend(friend);
 		$location.url('/editFriends');
+	};
+
+	$scope.toURL = function(url) {
+		$window.location = url;
 	};
 	
 	$scope.onDeleteClick = function(friendID) {
@@ -71,6 +52,23 @@ app.controller('FriendsCtrl', function($scope, FriendManager, Contacts, Notifica
         	FriendManager.remove(friendID, $scope.$apply);
         }
 		$scope.state = $scope.CREATE;
+	};
+
+	$scope.onSMSClick = function() {
+		var message = $scope.model.name + "：真高興，你又長了一歲。祝你生日快樂，永遠快樂！";
+		$window.sms.send($scope.model.phone, message, "INTENT");
+		//$window.open("sms:"+ $scope.model.phone + "?body=" + message);
+	};
+	
+	$scope.onPhoneClick = function() {
+		$window.open("tel:"+ $scope.model.phone);
+	};
+	
+	$scope.onEmailClick = function() {
+		var subject = "生日快樂！";
+		var message = $scope.model.name + "：真高興，你又長了一歲。祝你生日快樂，永遠快樂！";
+		$window.plugins.emailComposer.showEmailComposer(subject, message, [$scope.model.email], [], [], true, []);
+		//$window.open('mailto:' + $scope.model.email + '?subject=' + subject + '&body=' + message);
 	};
 	
 });

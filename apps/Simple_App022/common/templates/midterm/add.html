@@ -9,7 +9,15 @@
 			    <span class="input-label">電話: </span>
 			    <input type="tel" placeholder="09XXXXXXXX"  ng-model="model.phone">
 			</label>
-			
+			<label class="item item-input">
+			    <span class="input-label">郵件: </span>
+			    <input type="email" placeholder="xxxxx@gmail.com/yahoo.com.tw/hotmail.com"  ng-model="model.email">
+			</label>
+			<label class="item item-input">
+			    <span class="input-label">生日: </span>
+			    <input type="text" placeholder="19XX-XX-XX" ng-model="model.birthday">
+			</label>
+
 			<div class="item item-input-inset">
 			    <button ng-click="onCreateClick()" class="button button-positive">新增</button>
 				<button ng-click="setFriendsFromContacts()" class="button button-positive">匯入聯絡人</button>

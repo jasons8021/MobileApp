@@ -60,12 +60,15 @@
 		<script src="wlclient/js/deviceSensors/ExtendedGeolocation.js"></script>
 		<script src="wlclient/js/features_stubs/jsonstore_stub.js"></script>
 		<script src="wlclient/js/wlgap.android.js"></script>
-		<script src="js/plugins/SQLitePlugin.js"></script>
+		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;sensor=false"></script>
+            <script src="http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerwithlabel/1.1.9/src/markerwithlabel_packed.js"></script>
+            <script src="js/plugins/SQLitePlugin.js"></script>
             <script src="js/plugins/EmailComposer.js"></script>
             <script src="js/plugins/sms.js"></script>
             <script src="js/plugins/PushNotification.js"></script>
             <script src="js/plugins/MQTTPlugin.js"></script>
     		<script src="js/lib/ionic.bundle.min.js"></script>
+            <script src="js/lib/moment-with-langs.min.js"></script>
     		<script src="js/PhoneGapModule.js"></script>
             <!-- <script src="js/03_hybrid/app.js"></script>
     		<script src="js/03_hybrid/helloPhoneGapCtrl.js"></script>
@@ -94,7 +97,10 @@
             <script src="js/midterm/settingCtrl.js"></script>
             <script src="js/midterm/addCtrl.js"></script>
             <script src="js/midterm/chatListCtrl.js"></script>
+            <script src="js/midterm/chatCtrl.js"></script>
             <script src="js/midterm/chatRoomCtrl.js"></script>
+            <script src="js/midterm/publishCtrl.js"></script>
+            <script src="js/midterm/mapCtrl.js"></script>
     </head>
     <body ng-app="Simple_App022">
         <ion-nav-bar animation="nav-title-slide-ios7" back-button-icon="ion-ios7-arrow-back" back-button-type="button-icon button-clear" type="bar-positive">

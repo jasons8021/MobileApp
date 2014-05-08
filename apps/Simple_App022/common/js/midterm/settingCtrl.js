@@ -2,11 +2,12 @@ app.controller('SettingCtrl',function($scope, $window, SettingManager, $ionicLoa
 	$scope.UNREGISTERED = 0;
 	$scope.REGISTERED = 1;
 	$scope.DELETE = 2;
+	$scope.SUBSRCIPE;
+	$scope.UNSUBSRCIPE;
 	
 	$scope.state = $scope.UNREGISTERED;
-	
 	$scope.init = function() {
-		$scope.host = SettingManager.getHost();
+		$scope.host = angular.copy(SettingManager.getHost());
 		if ($scope.host.registered) {
 			$scope.state = $scope.REGISTERED;
 		}
@@ -18,7 +19,7 @@ app.controller('SettingCtrl',function($scope, $window, SettingManager, $ionicLoa
     
     $scope.onRegisterClick = function() {
     	if(!$scope.host.phone || !$scope.host.name) {
-    		Notification.alert('請輸入電話', null, "通知");
+    		Notification.alert('請輸入電話及姓名', null, "通知");
     		return;
     	}
     	console.log($window.device.uuid);
@@ -29,8 +30,8 @@ app.controller('SettingCtrl',function($scope, $window, SettingManager, $ionicLoa
  				$scope.hide();
      			$scope.host.registered = true;
      			Notification.alert('註冊成功', null, "通知");
-     			SettingManager.setHost($scope.host);     			
-     			$window.plugins.MQTTPlugin.CONNECT(angular.noop, angular.noop, $scope.host.phone, $scope.host.name);
+     			SettingManager.setHost($scope.host);
+     			$window.plugins.MQTTPlugin.CONNECT(angular.noop, angular.noop, $scope.host.phone, $scope.host.phone);
      			$scope.state = $scope.REGISTERED;
      		}, function() {
      			$scope.hide();
@@ -77,5 +78,16 @@ app.controller('SettingCtrl',function($scope, $window, SettingManager, $ionicLoa
     
     $scope.hide = function() {
     	$scope.loading.hide();
+    };
+    
+    $scope.onSubscribeClick = function() {
+    	SettingManager.setHost($scope.host);
+    	Notification.alert('訂閱成功', null, "通知");
+    };
+    
+    $scope.onUnsubscribeClick = function() {
+    	$scope.host.publisherId = "";
+    	$scope.host.publisherName = "";
+    	SettingManager.setHost($scope.host);
     };
 });
