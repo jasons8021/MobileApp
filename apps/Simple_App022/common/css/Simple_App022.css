@@ -16,6 +16,10 @@ a, abbr, address, article, aside, audio, b, blockquote, body, canvas, caption, c
 	font-weight: bold;
 }
 
+.notmember {
+	color : black;
+}
+
 .messages {
 	margin:0;
 	padding:0;
@@ -77,4 +81,9 @@ a, abbr, address, article, aside, audio, b, blockquote, body, canvas, caption, c
 .higherItem{
 	padding-top: 5px;
 	padding-bottom: 5px;
+}
+
+.rightItem {
+	float: right;
+	margin-top: -20px;
 }

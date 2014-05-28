@@ -20,7 +20,9 @@
 
 			<div class="item item-input-inset">
 			    <button ng-click="onCreateClick()" class="button button-positive">新增</button>
-				<button ng-click="setFriendsFromContacts()" class="button button-positive">匯入聯絡人</button>
+				<button ng-click="setFriendsFromContacts()" class="button button-positive">聯絡人</button>
+				<button ng-click="setFriendsFromFB()" ng-disabled="!host.hasFB" class="button button-positive">臉書</button>
+				<button ng-click="setFriendsFromGoogleDrive()" class="button button-positive">雲通訊錄</button>
 	  		</div>
   		</div>
     </ion-content>

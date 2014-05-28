@@ -29,7 +29,7 @@
 				<a class="button button-positive" ng-show="state == UNREGISTERED && host.token" ng-click="onRegisterClick()">註冊</a>
 				
 				<a class="button button-positive" ng-show="state == REGISTERED" ng-click="onActionClick(DELETE)">刪除</a>
-				
+				<a class="button button-positive" ng-click="onFBRegisterClick()">FB註冊</a>
 				<a class="button button-positive" ng-show="state == DELETE" ng-click="onDeleteClick()">確定</a>
 				<a class="button button-positive" ng-show="state == DELETE" ng-click="onCancelClick()">取消</a>
 			</div>

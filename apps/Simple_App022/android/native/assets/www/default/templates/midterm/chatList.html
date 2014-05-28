@@ -8,16 +8,19 @@
 					請新增朋友
 				</span>
 			</div>
-			<div ng-show="getCount() > 0" ng-repeat="friend in friends track by $index">
-		    	<div ng-show="friend.isMember"  class="item item-icon-right" ng-click="toURL('#/chat/' + friend.phone)">
-	                <div>
-		                <h2>{{friend.name}}</h2>
-		                <span class="badge badge-assertive" ng-show="getUnread(friend.phone) > 0">{{getUnread(friend.phone)}}</span>
+			<div ng-show="getCount() > 0" ng-repeat="friend in friends | sortBy:'message'  track by $index">
+		    	<div ng-show="friend.isMember"  class="item item-icon-left item-icon-right">
+		    		<i class="icon ion-ios7-chatbubble"></i>
+	                <div ng-click="toURL(friend.phone)">
+	                	<h2>{{friend.name}}</h2>
+	                	<h2 class="rightItem" style="margin-top: -20px;">生日提醒</h2>
+		                <p>{{friend.lastMessage | fromNow}} &nbsp;</p>
+		                <p class="rightItem">{{friend.birthday}}</p>
+		                <span class="badge badge-assertive" ng-show="getUnread(friend) > 0">{{getUnread(friend)}}</span>  
 				    </div>
-					<i class="icon ion-ios7-chatbubble"></i>
+				    <i class="icon" ng-click="onSetEventClick(friend)" ng-class="friend.eventId ? 'ion-ios7-checkmark':'ion-ios7-checkmark-outline'"></i>
 				</div>
 	        </div>
         </div>
-	    
     </ion-content>
 </ion-view>

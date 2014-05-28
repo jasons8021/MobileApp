@@ -9,6 +9,8 @@ app.controller('MapCtrl', function($scope, $stateParams, Geolocation, $window){
 	$scope.zoom = 13;
 	
 	$scope.init = function() {
+		var x_offset = 30;
+		var y_offset = 65;
 		if($scope.isMe) {
 			var origin = new google.maps.LatLng($stateParams.latitude, $stateParams.longitude);
 			var mapOptions = {
@@ -20,7 +22,7 @@ app.controller('MapCtrl', function($scope, $stateParams, Geolocation, $window){
 			var marker = new MarkerWithLabel({
 			    position: origin,
 			    labelContent: "我",
-			    labelAnchor: new google.maps.Point(30, 0),
+			    labelAnchor: new google.maps.Point(x_offset, y_offset),
 			    labelClass: "labels",
 			    labelStyle: {opacity: 0.75}
 			});
@@ -60,13 +62,13 @@ app.controller('MapCtrl', function($scope, $stateParams, Geolocation, $window){
 						var destinationMarker = new MarkerWithLabel({
 							position: new google.maps.LatLng(leg.end_location.k, leg.end_location.A),
 						    labelContent: $scope.friendName,
-						    labelAnchor: new google.maps.Point(30, 0),
+						    labelAnchor: new google.maps.Point(x_offset, y_offset),
 						    labelClass: "labels"
 						});
 				    	var originMarker = new MarkerWithLabel({
 						    position: new google.maps.LatLng(leg.start_location.k, leg.start_location.A),
 						    labelContent: "我",
-						    labelAnchor: new google.maps.Point(30, 0),
+						    labelAnchor: new google.maps.Point(x_offset, y_offset),
 						    labelClass: "labels"
 						});
 				    	originMarker.setMap(map);

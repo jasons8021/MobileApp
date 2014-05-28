@@ -9,10 +9,11 @@
 				</span>
 			</div>
 			
-		    <div ng-show="getCount() > 0" ng-repeat="friend in friends track by $index" ng-if="friend.isMember" class="item item-icon-left item-icon-right">
+		    <div ng-show="getCount() > 0" ng-repeat="friend in friends track by $index" class="item item-icon-left item-icon-right">
 		    	<i class="icon ion-edit" ng-click="onEditClick(friend)"></i>
                 <div ng-click="toURL('#/chat/' + friend.phone)">
-	                <h2 ng-class="friend.isMember ? 'member' : ''">{{friend.name}}</h2>
+	                <h2 ng-class="friend.isMember ? 'member' : 'notmember'">{{friend.name}}</h2>
+	                <span class="item-note">{{friend.birthday| afterDay}}生日</span>
 	                <p>{{friend.phone}}</p>
 			    </div>
 			    <i class="icon ion-trash-b" ng-click="onDeleteClick(friend.id)"></i>

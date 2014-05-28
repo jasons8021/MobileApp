@@ -5,12 +5,7 @@ angular.module('midtermApp', ['PhoneGap']).factory('iLabMessage', function ($htt
 	
 	return {
     	sendMessage: function(deliveryMessage, onSucess) {
-    		// var messageData = {
-      //           senderPhone: senderPhone,
-      //           receiverPhone: receiverPhone,
-      //           message: message
-      //       };
-    		
+            
     		var send = $http({
                 method: 'POST',
                 url: iLabServiceUrl,

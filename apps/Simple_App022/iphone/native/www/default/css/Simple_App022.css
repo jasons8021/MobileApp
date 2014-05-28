@@ -18,6 +18,10 @@ a, abbr, address, article, aside, audio, b, blockquote, body, canvas, caption, c
 	font-weight: bold;
 }
 
+.notmember {
+	color : black;
+}
+
 .messages {
 	margin:0;
 	padding:0;
@@ -80,6 +84,12 @@ a, abbr, address, article, aside, audio, b, blockquote, body, canvas, caption, c
 	padding-top: 5px;
 	padding-bottom: 5px;
 }
+
+.rightItem {
+	float: right;
+	margin-top: -20px;
+}
+
 /* Stylesheet content from css/Simple_App022.css in folder iphone */
 
 /* this CSS file extends the application CSS file found under common\css */

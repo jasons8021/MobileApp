@@ -92,4 +92,16 @@ app.controller('SettingCtrl',function($scope, $window, SettingManager, $ionicLoa
     	$scope.host.publisherName = "";
     	SettingManager.setHost($scope.host);
     };
+
+    $scope.onFBRegisterClick = function() {
+        $window.openFB.login('user_friends', function() {
+            Notification.alert("已授權BirthdayLine", null, '消息', '確定');
+            $scope.host.hasFB = true;
+            SettingManager.setHost($scope.host);
+        },
+        function(error) {
+            $scope.hide();
+            Notification.alert("未授權BirthdayLine", null, '警告', '確定');
+        });
+    };
 });
