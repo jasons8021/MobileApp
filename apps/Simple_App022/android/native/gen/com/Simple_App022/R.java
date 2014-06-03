@@ -14,9 +14,10 @@ public final class R {
         public static final int icon=0x7f020000;
         public static final int icon1=0x7f020001;
         public static final int icon2=0x7f020002;
-        public static final int push=0x7f020003;
-        public static final int settings=0x7f020004;
-        public static final int splash=0x7f020005;
+        public static final int iconfinal=0x7f020003;
+        public static final int push=0x7f020004;
+        public static final int settings=0x7f020005;
+        public static final int splash=0x7f020006;
     }
     public static final class string {
         public static final int OKTitleWLServerUrl=0x7f040007;

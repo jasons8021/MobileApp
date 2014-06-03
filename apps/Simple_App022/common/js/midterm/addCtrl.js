@@ -1,6 +1,7 @@
 app.controller('AddCtrl', function($scope, FriendManager, SettingManager, Contacts, Notification, $window, $ionicLoading, $location, $http) {
 
 	$scope.model = {};
+    $scope.host = SettingManager.getHost();
 
     $scope.show = function() {
         $scope.loading = $ionicLoading.show({
@@ -88,7 +89,7 @@ app.controller('AddCtrl', function($scope, FriendManager, SettingManager, Contac
                                 email: "",
                                 birthday: friendList[i].birthday
                         };
-                        console.log(JSON.stringify(friend));
+                        console.log('FB' + JSON.stringify(friend));
                         FriendManager.add(friend, $scope.$apply);
                     }
                     $scope.hide();
