@@ -1,10 +1,10 @@
 app.factory('DBManager', function($window, PhoneGap) {
 	var db = null;
     PhoneGap.ready(function() {
-        db = $window.sqlitePlugin.openDatabase({name: "MidtermAppDB"});
+        db = $window.sqlitePlugin.openDatabase({name: "FinalAppDB"});
         db.transaction(function(tx) {
-            tx.executeSql("CREATE TABLE IF NOT EXISTS friends(id INTEGER PRIMARY KEY ASC, name TEXT, phone TEXT UNIQUE, email TEXT, birthday DATE, isMember BOOLEAN)", []);
-            tx.executeSql("CREATE TABLE IF NOT EXISTS messageLog(MsgId INTEGER PRIMARY KEY ASC, message TEXT, senderPhone TEXT , receiverPhone TEXT, messageTime DATE, hasRead BOOLEAN)", []);
+            tx.executeSql("CREATE TABLE IF NOT EXISTS friends(id INTEGER PRIMARY KEY ASC, name TEXT, phone TEXT UNIQUE, email TEXT, birthday DATE, isMember BOOLEAN, eventId TEXT default '')", []);
+            tx.executeSql("CREATE TABLE IF NOT EXISTS messageLog(MsgId INTEGER PRIMARY KEY,senderPhone TEXT, receiverPhone TEXT, message TEXT, messageTime DATE, hasRead BOOLEAN)", []);
         });
     });
     
@@ -16,6 +16,7 @@ app.factory('DBManager', function($window, PhoneGap) {
 	                    [friend.name, friend.phone, friend.email, friend.birthday, friend.isMember],
 	                    function(tx, res) {
 	                		friend.id = res.insertId;
+	                		console.log('新增朋友成功, fid : ' + friend.id);
 	                        (onSuccess || angular.noop)();
 	                    }, function (e) {
 	                        console.log('新增朋友失敗，原因: ' + e.message);
@@ -30,8 +31,8 @@ app.factory('DBManager', function($window, PhoneGap) {
         updateFriend: function (friend, onSuccess, onError) {
         	PhoneGap.ready(function() {
 	            db.transaction(function (tx) {
-	                tx.executeSql("UPDATE friends SET name = ?, phone = ?, email = ?, birthday = ?, isMember = ? where id = ?",
-	                    [friend.name, friend.phone, friend.email, friend.birthday, friend.isMember, friend.id],
+	                tx.executeSql("UPDATE friends SET name = ?, phone = ?, email = ?, birthday = ?, isMember = ?, eventId = ? where id = ?",
+	                    [friend.name, friend.phone, friend.email, friend.birthday, friend.isMember, friend.eventId, friend.id],
 	                    onSuccess,
 	                    onError
 	                );
@@ -63,9 +64,9 @@ app.factory('DBManager', function($window, PhoneGap) {
 
         saveMessage: function (messageLog, onSuccess, onError) {
         	PhoneGap.ready(function() {
-	            db.transaction(function(tx) {
-	                tx.executeSql("INSERT INTO messageLog(MsgId, message, senderPhone, receiverPhone, messageTime, hasRead) VALUES (?, ?, ?, ?, ?, ?)",
-	                    [messageLog.MsgId, messageLog.message, messageLog.senderPhone, messageLog.receiverPhone, messageLog.messageTime, messageLog.hasRead],
+	            db.transaction(function(tx) {//msgId, senderPhone, receiverPhone, message, time, hasRead
+	                tx.executeSql("INSERT INTO messageLog(MsgId, senderPhone, receiverPhone, message, messageTime, hasRead) VALUES (?, ?, ?, ?, ?, ?)",
+	                    [messageLog.MsgId, messageLog.senderPhone, messageLog.receiverPhone, messageLog.message, messageLog.messageTime, messageLog.hasRead],
 	                    function(tx, res) {
 	                		console.log("DB saveMessage 成功，訊息：" + messageLog.message + ", messageLog.MsgId" + messageLog.MsgId + ", MessageManager.receiverPhone：" + messageLog.receiverPhone + ", MessageManager.hasRead" + messageLog.hasRead);
 	                        (onSuccess || angular.noop)();
@@ -138,8 +139,9 @@ app.factory('FriendManager', function(DBManager, iLabMember, $window) {
 
 	DBManager.getFriends(function(tx, res) {
 		for (var i = 0, max = res.rows.length; i < max; i++) {
+			res.rows.item(i).isMember = JSON.parse(res.rows.item(i).isMember);
 			idIndexedFriends[res.rows.item(i).id] = res.rows.item(i);
-			console.log("isMember = " + idIndexedFriends[res.rows.item(i).id].isMember);
+			phoneIndexedFriends[res.rows.item(i).phone] = res.rows.item(i);
 		}
 	});
 	return {
@@ -207,12 +209,15 @@ app.factory('FriendManager', function(DBManager, iLabMember, $window) {
 app.factory('SettingManager', function($window) {
 	if (!$window.localStorage['host'])
 		$window.localStorage['host'] = "{}";
+	var host = JSON.parse($window.localStorage['host']);
 	return {
-		setHost: function(host) {
+		setHost: function(newHost) {
+			for (var i in newHost)
+				host[i] = newHost[i];
 			$window.localStorage['host'] = JSON.stringify(host);
 		},
 		getHost: function() {
-			return JSON.parse($window.localStorage['host']);
+			return host;
 		}
 	};
 });
@@ -228,6 +233,7 @@ app.factory('ChatManager', function(DBManager, SettingManager) {
 			return message.receiverPhone;
 		return message.senderPhone;
 	};
+
 	var checkMessage = function(message) {
 		var result = null;
 		var phone = getPhone(message);
@@ -238,8 +244,9 @@ app.factory('ChatManager', function(DBManager, SettingManager) {
 		}
 		return result;
 	};
+	
 	DBManager.getMessage(function(tx, res) {
-		console.log('ChatManager host: ' + host.phone);
+		console.log('ChatManager newHost: ' + host.phone);
 		for (var i = 0, max = res.rows.length; i < max; i++) {
 			console.log(JSON.stringify(res.rows.item(i)));
 			res.rows.item(i).hasRead = JSON.parse(res.rows.item(i).hasRead);

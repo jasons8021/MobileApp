@@ -67,7 +67,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
             controller: 'EditFriendsCtrl'
         })
         .state('chat', {
-            url: '/chat/:phone',
+            url: '/chat?phone&defaultMessage',
             templateUrl: 'templates/midterm/chat.html',
             controller: 'ChatCtrl'
         })
@@ -191,14 +191,6 @@ app.run(function(DBManager, SettingManager, PushNotificationsFactory, iLabMessag
     var fbAppId = '270369976420378';
     $window.openFB.init(fbAppId);
     
-    // PhoneGap.ready(function() {
-    //     if(host.phone){
-    //         $window.document.addEventListener("pause", function(){
-    //             iLabMessage.resetCounter(host.phone);
-    //         }, false);
-    //     }
-    // });
-    
     $window.receiveMessage = function(payload) {
         console.log('收到一則新訊息: ' + payload);
         var message = JSON.parse(payload);
@@ -207,17 +199,20 @@ app.run(function(DBManager, SettingManager, PushNotificationsFactory, iLabMessag
             console.log('message is null');
             return;
         }
-        console.log('receiveMessage : payload拆解出來的message訊息' + message);
         var friend = FriendManager.getByPhone(message.senderPhone);
         console.log('receiveMessage : senderPhone: ' + message.senderPhone);
+
         if (friend)
             console.log('receiveMessage : friend.name: ' + friend.name);
+        if (host)
+            console.log('host name : ' + host.name + ', host phone : ' + host.phone);
 
         if (friend || host.phone == message.senderPhone  || host.publisherId == message.senderPhone) {
             console.log('receiveMessage:' + message.message + ' ,  hasRead:' + message.hasRead);
+            iLabMessage.resetCounter(host.phone);
             if (!message.hasRead){          
                 ChatManager.send(message, function() {
-                    $rootScope.$broadcast('receivedMessage',message);
+                    $rootScope.$broadcast('receivedMessage', message);
                     $rootScope.$apply();
                 });
             }

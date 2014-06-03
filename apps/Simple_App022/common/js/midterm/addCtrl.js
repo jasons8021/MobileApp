@@ -1,15 +1,14 @@
 app.controller('AddCtrl', function($scope, FriendManager, SettingManager, Contacts, Notification, $window, $ionicLoading, $location, $http) {
 
 	$scope.model = {};
-    $scope.host = SettingManager.getHost();
 
     $scope.show = function() {
         $scope.loading = $ionicLoading.show({
-          content: "<i class='ion-loading-b'></i>",
-          animation: 'fade-in',
-          showBackdrop: true,
-          maxWidth: 200,
-          showDelay: 500
+            content: "<i class='ion-loading-b'></i>",
+            animation: 'fade-in',
+            showBackdrop: true,
+            maxWidth: 200,
+            showDelay: 500
         });
     };
     
@@ -159,5 +158,4 @@ app.controller('AddCtrl', function($scope, FriendManager, SettingManager, Contac
             });
         }
     };
-
 });

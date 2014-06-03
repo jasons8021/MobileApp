@@ -8,7 +8,7 @@
 					請新增朋友
 				</span>
 			</div>
-			<div ng-show="getCount() > 0" ng-repeat="friend in friends | sortBy:'message'  track by $index">
+			<div ng-show="getCount() > 0" ng-repeat="friend in friends | sortBy:'message' track by $index">
 		    	<div ng-show="friend.isMember"  class="item item-icon-left item-icon-right">
 		    		<i class="icon ion-ios7-chatbubble"></i>
 	                <div ng-click="toURL(friend.phone)">

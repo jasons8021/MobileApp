@@ -2,7 +2,7 @@
 	<ion-content has-header="true" has-bouncing="true">
 		<div class="item item-input-inset">
 	    	<label class="item-input-wrapper">
-	      		<input type="text" placeholder="請輸入訊息...." ng-model="message.text">
+	      		<input type="text" placeholder="請輸入訊息...." ng-model="chatMessage.text">
 	    	</label>
 	   		<button class="button button-positive" ng-click="onSendMessageClick()">
 	      		傳送
@@ -11,16 +11,12 @@
 	      		位置
 	    	</button>
     	</div>
-    	
-		<div ng-repeat="chatMessage in reverse(chatMessages) track by $index" class="message">
+    	<div ng-repeat="chatMessage in chatMessageList | reverseArray track by $index">
 	        <div ng-class="chatMessage.senderPhone == hostPhone ? 'hostmessages' : 'guestmessages'" ng-click="onMessageClick(chatMessage)">
-	          	<!-- <i class="icon ion-ios7-chatbubble"></i> -->
-	          	<i class="icon ion-map" ng-show="hasLocation(chatMessage)"></i>
-		        <p ng-class="chatMessage.senderPhone == hostPhone ? 'hostp' : 'guestp'">{{chatMessage.message | removeLocation}}</p>
-		        <p>{{chatMessage.time | fromNow}}</p> 
-		        <p ng-if="chatMessage.hasRead">已讀不回</p>
+	          	<img ng-src="images/maps.png" ng-if="hasLocation(chatMessage)"></img>
+		        <p ng-show="!hasLocation(chatMessage)" ng-class="chatMessage.senderPhone == hostPhone ? 'hostp' : 'guestp'">{{chatMessage.message | removeLocation}}</p>
+		        <p>{{message.time | fromNow}} {{message.hasRead && message.senderPhone == hostPhone ? '已讀' : ''}}</p>
 			</div>
 	    </div>
-
     </ion-content>
 </ion-view>

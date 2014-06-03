@@ -1,4 +1,4 @@
-app.controller('FriendsCtrl', function($scope, FriendManager, $window, $ionicLoading, $http, $rootScope, $location) {
+app.controller('FriendsCtrl', function($scope, FriendManager, $window, $ionicLoading, $http, $rootScope, $location, $state) {
 	$scope.friends = null;
 	$scope.localQueue = new Array();
 
@@ -40,8 +40,12 @@ app.controller('FriendsCtrl', function($scope, FriendManager, $window, $ionicLoa
 		$location.url('/editFriends');
 	};
 
-	$scope.toURL = function(url) {
-		$window.location = url;
+	$scope.toURL = function(phone) {
+		if (FriendManager.getByPhone(phone))
+			console.log('friend go to chat , phone : ' + phone + ', friend name : ' + FriendManager.getByPhone(phone).name);
+		else
+			console.log('friend go to chat , phone : ' + phone);
+		$state.go('chat',{phone:phone});
 	};
 	
 	$scope.onDeleteClick = function(friendID) {

@@ -29,7 +29,11 @@ app.controller('MapCtrl', function($scope, $stateParams, Geolocation, $window){
 			$scope.friendName = "我的位置";	
 			marker.setMap(map);
 		} else {
-			Geolocation.getCurrentPosition(function(position) {
+			Geolocation.getCurrentPosition(onSuccess, onError);			
+		}
+	};
+
+	function onSuccess(position) {
 				var directionsService = new google.maps.DirectionsService();
 				var origin = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 				var destination = new google.maps.LatLng($stateParams.latitude, $stateParams.longitude);
@@ -76,7 +80,9 @@ app.controller('MapCtrl', function($scope, $stateParams, Geolocation, $window){
 						directionsDisplay.setMap(map);
 				    }
 				});
-			});
-		}
-	};
+			}
+			
+	function onError(error) {
+    	alert('code: ' + error.code + '\n' + 'message: ' + error.message + '\n');
+	}
 });

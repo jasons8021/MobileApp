@@ -2,9 +2,9 @@ app.controller('ChatCtrl', function($scope, ChatManager, $stateParams, FriendMan
 	$scope.phone = $stateParams.phone;
 	$scope.chatMessage = {};
 	$scope.chatMessage.text = $stateParams.defaultMessage ? $stateParams.defaultMessage : "";
-	$scope.messages = ChatManager.get($scope.phone);
+	$scope.chatMessageList = ChatManager.get($scope.phone);
 	$scope.friendName = FriendManager.getByPhone($scope.phone).name;
-	$scope.hostPhone = SettingManager.getHost().phone;;
+	$scope.hostPhone = SettingManager.getHost().phone;
 	
 	$scope.$on('receivedMessage', function(event, message) {
 		if (message.hasRead) {
@@ -15,8 +15,8 @@ app.controller('ChatCtrl', function($scope, ChatManager, $stateParams, FriendMan
 	});
 	
 	$scope.init = function() {
-		for(var index in $scope.messages) {
-			var message = $scope.messages[index];
+		for(var index in $scope.chatMessageList) {
+			var message = $scope.chatMessageList[index];
 			$scope.readMessage(message);
 		}
 	};
@@ -48,9 +48,13 @@ app.controller('ChatCtrl', function($scope, ChatManager, $stateParams, FriendMan
     		// (25.0693046,121.661722)
     		$scope.chatMessage.text = "("+position.coords.latitude+","+position.coords.longitude+")" + $scope.chatMessage.text;
     		$scope.onSendMessageClick();
-    	});
+    	}, onError);
     };
-    
+
+    function onError(error) {
+    	alert('code: ' + error.code + '\n' + 'message: ' + error.message + '\n');
+	}
+
     $scope.hasLocation = function(message) {
     	if (message.hasLocation == undefined)
     		message.hasLocation = new RegExp(/^\(([0-9.]+),([0-9.]+)\)/).test(message.message);
@@ -74,7 +78,7 @@ app.controller('ChatCtrl', function($scope, ChatManager, $stateParams, FriendMan
 		type: 'button-clear ion-ios7-arrow-back',
 		content: "",
 		tap: function() {
-			$window.location = "#/tab/members";
+			$window.location = "#/tab/chatList";
 		}
 	}];
 });
