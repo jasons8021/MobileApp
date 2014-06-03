@@ -87,3 +87,7 @@ a, abbr, address, article, aside, audio, b, blockquote, body, canvas, caption, c
 	float: right;
 	margin-top: -20px;
 }
+
+#foodMap-canvas {
+  	height: 500px;
+}

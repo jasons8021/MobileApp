@@ -24,21 +24,3 @@
 
     </ion-content>
 </ion-view>
-
-<!-- <div ng-repeat="chatMessage in reverse(chatMessages) track by $index">
-    <div ng-click="onMessageClick(chatMessage)">
-      	<div class="item higherItem">
-      		<div ng-class="chatMessage.senderPhone == hostPhone ? 'item-icon-right' : 'item-icon-left'" ng-show="hasLocation(chatMessage)">
-      			<i class="icon ion-map"></i>
-      		</div>
-      	</div>
-      	<div class="message">
-      		<div ng-class="chatMessage.senderPhone == hostPhone ? 'hostmessages' : 'guestmessages'">
-          		<p ng-class="chatMessage.senderPhone == hostPhone ? 'hostp' : 'guestp'" ng-show="!hasLocation(chatMessage)">{{chatMessage.message | removeLocation}}</p>
-		        <p>{{chatMessage.time | fromNow}}</p> 
-		        <p ng-if="chatMessage.hasRead">已讀不回</p>
-	        </div>
-      	</div>
-        
-	</div>
-</div> -->

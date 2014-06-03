@@ -45,6 +45,7 @@ app.controller('ChatCtrl', function($scope, ChatManager, $stateParams, FriendMan
 	
     $scope.onLocationClick = function() {
     	Geolocation.getCurrentPosition(function(position) {
+    		// (25.0693046,121.661722)
     		$scope.chatMessage.text = "("+position.coords.latitude+","+position.coords.longitude+")" + $scope.chatMessage.text;
     		$scope.onSendMessageClick();
     	});

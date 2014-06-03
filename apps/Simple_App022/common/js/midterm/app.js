@@ -52,6 +52,15 @@ app.config(function($stateProvider, $urlRouterProvider) {
                 }
             }
         })
+        .state('tab.foodMap', {
+            url: '/foodMap',
+            views: {
+                'tab-foodMap': {
+                    templateUrl: 'templates/midterm/foodMap.html',
+                    controller: 'FoodMapCtrl'
+                }
+            }
+        })
         .state('editFriends', {
             url: '/editFriends',
             templateUrl: 'templates/midterm/editFriends.html',
