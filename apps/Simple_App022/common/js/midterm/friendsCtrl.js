@@ -41,10 +41,6 @@ app.controller('FriendsCtrl', function($scope, FriendManager, $window, $ionicLoa
 	};
 
 	$scope.toURL = function(phone) {
-		if (FriendManager.getByPhone(phone))
-			console.log('friend go to chat , phone : ' + phone + ', friend name : ' + FriendManager.getByPhone(phone).name);
-		else
-			console.log('friend go to chat , phone : ' + phone);
 		$state.go('chat',{phone:phone});
 	};
 	

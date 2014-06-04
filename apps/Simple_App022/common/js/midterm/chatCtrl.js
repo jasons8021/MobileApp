@@ -75,7 +75,7 @@ app.controller('ChatCtrl', function($scope, ChatManager, $stateParams, FriendMan
     };
     
 	$scope.backButton = [{
-		type: 'button-clear ion-ios7-arrow-back',
+		type: 'ion-arrow-left-c',
 		content: "",
 		tap: function() {
 			$window.location = "#/tab/chatList";

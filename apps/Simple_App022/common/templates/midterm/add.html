@@ -1,29 +1,12 @@
-<ion-view title="'新增好友'" ng-init="init()">
+<ion-view title="'新增'" ng-init="init()">
     <ion-content has-header="true" has-tabs="true">
-	    <div class="list">
-	    	<label class="item item-input">
-			    <span class="input-label">姓名: </span>
-			    <input type="text" placeholder="小強"  ng-model="model.name">
-			</label>
-			<label class="item item-input">
-			    <span class="input-label">電話: </span>
-			    <input type="tel" placeholder="09XXXXXXXX"  ng-model="model.phone">
-			</label>
-			<label class="item item-input">
-			    <span class="input-label">郵件: </span>
-			    <input type="email" placeholder="xxxxx@gmail.com/yahoo.com.tw/hotmail.com"  ng-model="model.email">
-			</label>
-			<label class="item item-input">
-			    <span class="input-label">生日: </span>
-			    <input type="text" placeholder="19XX-XX-XX" ng-model="model.birthday">
-			</label>
-
-			<div class="item item-input-inset">
-			    <button ng-click="onCreateClick()" class="button button-positive">新增</button>
-				<button ng-click="setFriendsFromContacts()" class="button button-positive">聯絡人</button>
-				<button ng-click="setFriendsFromFB()" ng-disable="!host.hasFB" class="button button-positive">臉書</button>
-				<button ng-click="setFriendsFromGoogleDrive()" class="button button-positive">雲通訊錄</button>
-	  		</div>
-  		</div>
+    <div>
+    	<div class="item item-input-inset">
+		    <button ng-click="onAddFriendClick()" class="button button-positive button-full">新增朋友</button>
+	  	</div>
+	  	<div class="item item-input-inset">
+	  		<button ng-click="onAddRestaurantClick()" class="button button-positive button-full">新增餐廳</button>
+	  	</div>
+    </div>
     </ion-content>
 </ion-view>

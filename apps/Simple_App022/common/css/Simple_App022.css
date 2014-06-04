@@ -91,3 +91,20 @@ a, abbr, address, article, aside, audio, b, blockquote, body, canvas, caption, c
 #foodMap-canvas {
   	height: 500px;
 }
+
+#foodMap-enterBtn {
+	z-index:1;
+	position: absolute; right: 10px; top:400px;
+}
+
+.locatedIcon {
+	float:right;
+	margin:0 0 1rem 0;
+	padding:0;
+}
+
+#A { height:52px } /* 僅設定A框的高度 */
+#B { position: absolute; left: 0px; top:52px; height:52px; width:100%; } /* 設定B框固定在瀏覽器最左邊 */
+#C { position: absolute; left: 0px; top:104px; height:52px; width:90%; } /* 設定C框固定在瀏覽器最左邊 */
+#D { position: absolute; right: 0px; top:104px; height:52px;  width:10%; } /* 設定D框固定在瀏覽器最右邊 */
+#E { position: absolute; left: 0px; top:156px; width:100%;} /* 設定E框固定在瀏覽器最左邊 */

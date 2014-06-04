@@ -75,6 +75,16 @@ app.config(function($stateProvider, $urlRouterProvider) {
             url: '/map?latitude&longitude&friendName&isMe',
             templateUrl: 'templates/midterm/map.html',
             controller: 'MapCtrl'
+        })
+        .state('addFriends', {
+            url: '/addFriends',
+            templateUrl: 'templates/midterm/addFriends.html',
+            controller: 'AddFriendsCtrl'
+        })
+        .state('addRestaurants', {
+            url: '/addRestaurants',
+            templateUrl: 'templates/midterm/addRestaurants.html',
+            controller: 'AddRestaurantsCtrl'
         });
 
     $urlRouterProvider.otherwise("/tab/friends");
