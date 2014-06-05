@@ -307,3 +307,16 @@ app.factory('ChatManager', function(DBManager, SettingManager) {
 		
 	};
 });
+
+app.factory('RestaurantManager', function($window) {
+	if (!$window.localStorage['restaurant'])
+		$window.localStorage['restaurant'] = "{}";
+	return {
+		setRestaurant: function(restaurant) {
+			$window.localStorage['restaurant'] = JSON.stringify(restaurant);
+		},
+		getRestaurant: function() {
+			return JSON.parse($window.localStorage['restaurant']);
+		}
+	};
+});

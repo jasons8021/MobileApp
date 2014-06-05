@@ -182,6 +182,18 @@ app.filter('reverseArray', function () {
     };
 });
 
+// app.service('RestaurantService', function(){
+
+//     var restaurant;
+
+//     setRestaurant: function(newRestaurant) {
+//         restaurant = newRestaurant;
+//     },
+//     getRestaurant: function() {
+//         return JSON.parse($window.localStorage['restaurant']);
+//     }
+// });
+
 app.run(function(DBManager, SettingManager, PushNotificationsFactory, iLabMessage, $window, PhoneGap, $rootScope, FriendManager, ChatManager) {
     Date.prototype.dateDiff = function(objDate, interval){
         var dtEnd = new Date(objDate);

@@ -1,6 +1,6 @@
 <ion-view title="'新增店家'">
     <ion-content has-header="true">
-    	<button id="foodMap-enterBtn" ng-click="onEnterClick()" class="button button-positive">確定</button>
+    	<button id="foodMap-enterBtn" ng-click="onEnterClick()" ng-show="address.hasAddress" class="button button-positive">確定</button>
         <div id="foodMap-canvas" ng-init="init()"></div>
     </ion-content>
 </ion-view>

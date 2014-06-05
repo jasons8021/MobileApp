@@ -1,7 +1,7 @@
-app.controller('FoodMapCtrl', function($scope, $stateParams, Geolocation, $window){
+app.controller('FoodMapCtrl', function($scope, RestaurantManager, Geolocation, $location, $window){
     $scope.address = {};
     $scope.address.hasAddress = false;
-
+    $scope.restaurant = RestaurantManager.getRestaurant();
     var taipeiTech = new google.maps.LatLng(25.043022, 121.534248);
     var infowindow = new google.maps.InfoWindow();
     var currentLatLng;
@@ -27,17 +27,17 @@ app.controller('FoodMapCtrl', function($scope, $stateParams, Geolocation, $windo
                 animation: google.maps.Animation.DROP,
                 position: currentLatLng
             });
-            // google.maps.event.addListener(marker, 'click', toggleBounce);
 
             google.maps.event.addListener(marker, 'click', function(evt){
-                $scope.address.hasAddress = false;
                 codeLatLng(evt.latLng.lat(), evt.latLng.lng());
                 console.log('address.hasAddress : ' + $scope.address.hasAddress)
             });
 
+            google.maps.event.addListener(marker, 'dragstart', function(evt){
+                $scope.address.hasAddress = false;
+            });
+
             google.maps.event.addListener(marker, 'dragend', function(evt){
-                // latlngFromMarker = evt.latLng.lat() + ',' + evt.latLng.lng();
-                // document.getElementById('current').innerHTML = '<p>Marker dropped:' + latlngFromMarker + '</p>';
                 codeLatLng(evt.latLng.lat(), evt.latLng.lng());
                 console.log('address.hasAddress : ' + $scope.address.hasAddress)
             });
@@ -55,31 +55,23 @@ app.controller('FoodMapCtrl', function($scope, $stateParams, Geolocation, $windo
                 animation: google.maps.Animation.DROP,
                 position: taipeiTech
             });
-            // google.maps.event.addListener(marker, 'click', toggleBounce);
 
             google.maps.event.addListener(marker, 'click', function(evt){
-                $scope.address.hasAddress = false;
                 codeLatLng(evt.latLng.lat(), evt.latLng.lng());
                 console.log('address.hasAddress : ' + $scope.address.hasAddress)
             });
 
+            google.maps.event.addListener(marker, 'dragstart', function(evt){
+                $scope.address.hasAddress = false;
+            });
+
             google.maps.event.addListener(marker, 'dragend', function(evt){
-                // latlngFromMarker = evt.latLng.lat() + ',' + evt.latLng.lng();
-                // document.getElementById('current').innerHTML = '<p>Marker dropped:' + latlngFromMarker + '</p>';
                 codeLatLng(evt.latLng.lat(), evt.latLng.lng());
                 console.log('address.hasAddress : ' + $scope.address.hasAddress)
             });
         });
         
     }
-
-    // function toggleBounce() {
-    //     if (marker.getAnimation() != null) {
-    //         marker.setAnimation(null);
-    //     } else {
-    //         marker.setAnimation(google.maps.Animation.BOUNCE);
-    //     }
-    // }
 
     function codeLatLng(lat, lng) {
         var latlng = new google.maps.LatLng(lat, lng);
@@ -90,6 +82,8 @@ app.controller('FoodMapCtrl', function($scope, $stateParams, Geolocation, $windo
                     infowindow.setContent(content);
                     infowindow.open(map, marker);
                     $scope.address.hasAddress = true;
+                    $scope.restaurant.address = results[0].formatted_address;
+                    RestaurantManager.setRestaurant($scope.restaurant);
                 } else {
                     alert('找不到該地址');
                     $scope.address.hasAddress = false;
@@ -108,9 +102,8 @@ app.controller('FoodMapCtrl', function($scope, $stateParams, Geolocation, $windo
 
     $scope.onEnterClick = function() {
         $scope.address.hasAddress = false;
-        console.log('enter click');
-    };
-    $scope.onEnterClickInit = function() {
-        console.log('enter init');
+
+        $location.url('/addRestaurants');
+        // $state.go('addRestaurants');
     };
 });

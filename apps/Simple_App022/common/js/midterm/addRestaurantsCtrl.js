@@ -1,4 +1,4 @@
-app.controller('AddRestaurantsCtrl', function($scope, Notification, $window, $ionicLoading, $location) {
+app.controller('AddRestaurantsCtrl', function($scope, Notification, $window, $ionicLoading, $location, RestaurantManager) {
 
 	$scope.restaurant = {};
 
@@ -17,27 +17,32 @@ app.controller('AddRestaurantsCtrl', function($scope, Notification, $window, $io
     };
 
 	$scope.init = function() {
-
+        $scope.restaurant = RestaurantManager.getRestaurant();
     };
+
     
 	$scope.onCreateClick = function() {
 		if (!$scope.restaurant.name || !$scope.restaurant.phone || !$scope.restaurant.address ) {
 			Notification.alert("請輸入姓名及電話", null, '警告', '確定');
 			return;
 		}
-		// FriendManager.add($scope.model, $scope.$apply);
+        
 		$scope.restaurant = {};
+        RestaurantManager.setRestaurant($scope.restaurant);
 		$location.url('/tab/friends');
 	};
 	
     $scope.onLocateClick = function() {
-        $location.url('/tab/friends');
+        RestaurantManager.setRestaurant($scope.restaurant);
+        $location.url('/tab/foodMap');
     };
 
     $scope.backButton = [{
         type: 'ion-arrow-left-c',
         content: "",
         tap: function() {
+            $scope.restaurant = {};
+            RestaurantManager.setRestaurant($scope.restaurant);
             $window.location = "#/tab/add";
         }
     }];

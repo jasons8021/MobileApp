@@ -1,6 +1,8 @@
-app.controller('AddCtrl', function($scope, $window, $state, $http) {
+app.controller('AddCtrl', function($scope, $window, RestaurantManager, $state, $http) {
 
     $scope.init = function() {
+    	$scope.restaurant = {};
+        RestaurantManager.setRestaurant($scope.restaurant);
         console.log('add initial');
     };
 

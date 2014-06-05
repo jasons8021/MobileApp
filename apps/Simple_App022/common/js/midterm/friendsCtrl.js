@@ -1,9 +1,12 @@
-app.controller('FriendsCtrl', function($scope, FriendManager, $window, $ionicLoading, $http, $rootScope, $location, $state) {
+app.controller('FriendsCtrl', function($scope, FriendManager, RestaurantManager, $window, $ionicLoading, $http, $rootScope, $location, $state) {
 	$scope.friends = null;
 	$scope.localQueue = new Array();
 
 	$scope.init = function() {
 		$scope.friends = FriendManager.list();
+
+		$scope.restaurant = {};
+        RestaurantManager.setRestaurant($scope.restaurant);
 		// $scope.onReceiveMessage();
     };
     
