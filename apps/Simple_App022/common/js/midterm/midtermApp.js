@@ -1,4 +1,4 @@
-angular.module('midtermApp', ['PhoneGap']).factory('iLabMessage', function ($http, $window, PhoneGap, $rootScope) {
+angular.module('midtermApp', ['PhoneGap']).factory('webServiceMessage', function ($http, $window, PhoneGap, $rootScope) {
 	var iLabServiceUrl = 'http://iweb.csie.ntut.edu.tw:10080/apps22/api/Message';
 	
 	return {
@@ -58,7 +58,8 @@ angular.module('midtermApp', ['PhoneGap']).factory('iLabMessage', function ($htt
     };
 });
 
-angular.module('midtermApp').factory('iLabMember', function ($rootScope, $window, $http) {
+
+angular.module('midtermApp').factory('webServiceMember', function ($rootScope, $window, $http) {
 	var iLabServiceUrl = 'http://iweb.csie.ntut.edu.tw:10080/apps22/api/Member';
 	
 	return {
@@ -115,4 +116,44 @@ angular.module('midtermApp').factory('iLabMember', function ($rootScope, $window
     		});
         }
 	};
+});
+
+angular.module('midtermApp').factory('webServiceRestaurant', function ($http, $window, PhoneGap, $rootScope) {
+    var iLabServiceUrl = 'http://iweb.csie.ntut.edu.tw:10080/apps22/api/Restaurant';
+    
+    return {
+        addRestaurant: function(restaurant, onSucess) {
+            var add = $http({
+                method: 'POST',
+                url: iLabServiceUrl,
+                data: restaurant
+            });
+            
+            add.success(function(response, status, headers, config){
+                console.log("addRestaurant發送成功，原因:"+response);
+                (onSucess || angular.noop)(response);
+            });
+            
+            add.error(function(response, status, headers, config) {
+                console.log("addRestaurant發送失敗，原因:"+response);
+            });
+        },
+
+        getRestaurantList: function(onSucess, onError) {
+            var get = $http({
+                method: 'GET',
+                url: iLabServiceUrl
+            });
+            
+            get.success(function(response, status, headers, config){
+                console.log("addRestaurant發送成功，原因:"+response);
+                (onSucess || angular.noop)(response);
+            });
+            
+            get.error(function(response, status, headers, config) {
+                console.log("addRestaurant發送失敗，原因:"+response);
+                (onError || angular.noop);
+            });
+        }
+    };
 });

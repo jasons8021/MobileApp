@@ -182,19 +182,7 @@ app.filter('reverseArray', function () {
     };
 });
 
-// app.service('RestaurantService', function(){
-
-//     var restaurant;
-
-//     setRestaurant: function(newRestaurant) {
-//         restaurant = newRestaurant;
-//     },
-//     getRestaurant: function() {
-//         return JSON.parse($window.localStorage['restaurant']);
-//     }
-// });
-
-app.run(function(DBManager, SettingManager, PushNotificationsFactory, iLabMessage, $window, PhoneGap, $rootScope, FriendManager, ChatManager) {
+app.run(function(DBManager, SettingManager, PushNotificationsFactory, webServiceMessage, $window, PhoneGap, $rootScope, FriendManager, ChatManager) {
     Date.prototype.dateDiff = function(objDate, interval){
         var dtEnd = new Date(objDate);
         if(isNaN(dtEnd)) return undefined;
@@ -231,7 +219,7 @@ app.run(function(DBManager, SettingManager, PushNotificationsFactory, iLabMessag
 
         if (friend || host.phone == message.senderPhone  || host.publisherId == message.senderPhone) {
             console.log('receiveMessage:' + message.message + ' ,  hasRead:' + message.hasRead);
-            iLabMessage.resetCounter(host.phone);
+            webServiceMessage.resetCounter(host.phone);
             if (!message.hasRead){          
                 ChatManager.send(message, function() {
                     $rootScope.$broadcast('receivedMessage', message);

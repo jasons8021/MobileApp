@@ -1,9 +1,7 @@
 app.controller('AddCtrl', function($scope, $window, RestaurantManager, $state, $http) {
 
     $scope.init = function() {
-    	$scope.restaurant = {};
-        RestaurantManager.setRestaurant($scope.restaurant);
-        console.log('add initial');
+        
     };
 
 	$scope.onAddFriendClick = function() {
@@ -11,6 +9,7 @@ app.controller('AddCtrl', function($scope, $window, RestaurantManager, $state, $
     };
 
     $scope.onAddRestaurantClick = function() {
+        RestaurantManager.clearLocalStorage();
         $state.go('addRestaurants');
     };
 });

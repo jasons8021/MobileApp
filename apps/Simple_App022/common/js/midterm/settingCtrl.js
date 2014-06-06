@@ -1,4 +1,4 @@
-app.controller('SettingCtrl',function($scope, $window, SettingManager, $ionicLoading, $http, Notification, iLabMember, iLabMessage){
+app.controller('SettingCtrl',function($scope, $window, SettingManager, $ionicLoading, $http, Notification, webServiceMember, webServiceMessage){
     $scope.UNREGISTERED = 0;
     $scope.REGISTERED = 1;
     $scope.DELETE = 2;
@@ -40,7 +40,7 @@ app.controller('SettingCtrl',function($scope, $window, SettingManager, $ionicLoa
         console.log($window.device.uuid);
         
         $scope.show();
-        iLabMember.register($scope.host,
+        webServiceMember.register($scope.host,
             function() {
                 $scope.hide();
                 $scope.host.registered = true;
@@ -56,7 +56,7 @@ app.controller('SettingCtrl',function($scope, $window, SettingManager, $ionicLoa
 
     $scope.onDeleteClick = function() {
         $scope.show();
-        iLabMember.unregister($scope.host.phone, 
+        webServiceMember.unregister($scope.host.phone, 
             function(response) {
                 $scope.host.name = "";
                 $scope.host.phone = "";

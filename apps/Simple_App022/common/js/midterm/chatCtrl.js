@@ -1,4 +1,4 @@
-app.controller('ChatCtrl', function($scope, ChatManager, $stateParams, FriendManager, SettingManager, iLabMessage, $window, Geolocation, $state){
+app.controller('ChatCtrl', function($scope, ChatManager, $stateParams, FriendManager, SettingManager, webServiceMessage, $window, Geolocation, $state){
 	$scope.phone = $stateParams.phone;
 	$scope.chatMessage = {};
 	$scope.chatMessage.text = $stateParams.defaultMessage ? $stateParams.defaultMessage : "";
@@ -31,14 +31,14 @@ app.controller('ChatCtrl', function($scope, ChatManager, $stateParams, FriendMan
             receiverPhone: $scope.phone,
             message: $scope.chatMessage.text
         };
-		iLabMessage.sendMessage(message);
+		webServiceMessage.sendMessage(message);
 		$scope.chatMessage.text = "";
 	};
     
     $scope.readMessage = function(message) {
     	if(!message.hasRead && message.senderPhone == $scope.phone) {
     		message.hasRead = true;
-			iLabMessage.sendMessage(message);
+			webServiceMessage.sendMessage(message);
 			ChatManager.read(message, $scope.$apply);
 		}
     };

@@ -1,4 +1,4 @@
-app.controller('PublishCtrl', function($scope, ChatManager, $ionicScrollDelegate, FriendManager, SettingManager, iLabMessage, $window, $rootScope){
+app.controller('PublishCtrl', function($scope, ChatManager, $ionicScrollDelegate, FriendManager, SettingManager, webServiceMessage, $window, $rootScope){
 	$scope.host = SettingManager.getHost();
 	$scope.publisherName = $scope.host.publisherName;
 	$scope.publisherId = $scope.host.publisherId;
@@ -28,7 +28,7 @@ app.controller('PublishCtrl', function($scope, ChatManager, $ionicScrollDelegate
     
     $scope.readMessage = function(chatMessage) {
     	if(!chatMessage.hasRead && chatMessage.senderPhone == $scope.phone) {
-			iLabMessage.readMessage(chatMessage.msgId);
+			webServiceMessage.readMessage(chatMessage.msgId);
 			ChatManager.read(chatMessage, $scope.$apply);
 		}
     };

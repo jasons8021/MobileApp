@@ -130,7 +130,7 @@ app.factory('DBManager', function($window, PhoneGap) {
     };
 });
 
-app.factory('FriendManager', function(DBManager, iLabMember, $window) {
+app.factory('FriendManager', function(DBManager, webServiceMember, $window) {
 	var idIndexedFriends = {};
 	var phoneIndexedFriends = {};
 
@@ -146,7 +146,7 @@ app.factory('FriendManager', function(DBManager, iLabMember, $window) {
 	});
 	return {
 		add: function(friend, onSuccess, onError) {
-			iLabMember.isMember(friend.phone, function(response) {
+			webServiceMember.isMember(friend.phone, function(response) {
 				friend.isMember = JSON.parse(response);
 				DBManager.addFriend(friend, function() {
 					idIndexedFriends[friend.id] = friend;
@@ -163,7 +163,7 @@ app.factory('FriendManager', function(DBManager, iLabMember, $window) {
 			});
 		},
 		edit: function(friend, onSuccess, onError) {
-			iLabMember.isMember(friend.phone, function(response) {
+			webServiceMember.isMember(friend.phone, function(response) {
 				friend.isMember = JSON.parse(response);
 				DBManager.updateFriend(friend, function() {
 					idIndexedFriends[friend.id] = friend;
@@ -317,6 +317,9 @@ app.factory('RestaurantManager', function($window) {
 		},
 		getRestaurant: function() {
 			return JSON.parse($window.localStorage['restaurant']);
+		},
+		clearLocalStorage: function(){
+			$window.localStorage['restaurant'] = "{}";
 		}
 	};
 });

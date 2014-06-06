@@ -83,6 +83,9 @@ app.controller('FoodMapCtrl', function($scope, RestaurantManager, Geolocation, $
                     infowindow.open(map, marker);
                     $scope.address.hasAddress = true;
                     $scope.restaurant.address = results[0].formatted_address;
+                    // $scope.restaurant.latlng = '(' + lat.toFixed(7) + ',' + lng.toFixed(7) + ')';
+                    $scope.restaurant.lat = lat.toFixed(7);
+                    $scope.restaurant.lng = lng.toFixed(7);
                     RestaurantManager.setRestaurant($scope.restaurant);
                 } else {
                     alert('找不到該地址');
