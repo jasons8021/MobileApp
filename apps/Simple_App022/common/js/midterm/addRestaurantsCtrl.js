@@ -41,7 +41,7 @@ app.controller('AddRestaurantsCtrl', function($scope, Notification, $window, $io
 	
     $scope.onLocateClick = function() {
         RestaurantManager.setRestaurant($scope.restaurant);
-        $location.url('/tab/foodMap');
+        $location.url('/foodMap');
     };
     
     $scope.ontestClick = function() {
@@ -57,26 +57,6 @@ app.controller('AddRestaurantsCtrl', function($scope, Notification, $window, $io
                 console.log('error');
             });
     };
-    /*
-    for(var key in myarr){ 
-          content +="陣列索引："+ key+" ; 值： "+myobj[key]+"\n"; 
-} 
-    webServiceMember.isMember(friend.phone, function(response) {
-                friend.isMember = JSON.parse(response);
-                DBManager.addFriend(friend, function() {
-                    idIndexedFriends[friend.id] = friend;
-                    phoneIndexedFriends[friend.phone] = friend;
-                    (onSuccess || angular.noop)();
-                }, onError);
-            }, function() {
-                friend.isMember = false;
-                DBManager.addFriend(friend, function() {
-                    idIndexedFriends[friend.id] = friend;
-                    phoneIndexedFriends[friend.phone] = friend;
-                    (onSuccess || angular.noop)();
-                }, onError);
-            });
-    */
 
     $scope.backButton = [{
         type: 'ion-arrow-left-c',

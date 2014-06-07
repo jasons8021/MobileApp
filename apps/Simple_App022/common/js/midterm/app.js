@@ -52,12 +52,12 @@ app.config(function($stateProvider, $urlRouterProvider) {
                 }
             }
         })
-        .state('tab.foodMap', {
-            url: '/foodMap',
+        .state('tab.test', {
+            url: '/test',
             views: {
-                'tab-foodMap': {
-                    templateUrl: 'templates/midterm/foodMap.html',
-                    controller: 'FoodMapCtrl'
+                'tab-test': {
+                    templateUrl: 'templates/midterm/test.html',
+                    controller: 'TestCtrl'
                 }
             }
         })
@@ -85,6 +85,11 @@ app.config(function($stateProvider, $urlRouterProvider) {
             url: '/addRestaurants',
             templateUrl: 'templates/midterm/addRestaurants.html',
             controller: 'AddRestaurantsCtrl'
+        })
+        .state('foodMap', {
+            url: '/foodMap',
+            templateUrl: 'templates/midterm/foodMap.html',
+            controller: 'FoodMapCtrl'
         });
 
     $urlRouterProvider.otherwise("/tab/friends");
