@@ -108,3 +108,11 @@ a, abbr, address, article, aside, audio, b, blockquote, body, canvas, caption, c
 #C { position: absolute; left: 0px; top:104px; height:52px; width:90%; } /* 設定C框固定在瀏覽器最左邊 */
 #D { position: absolute; right: 0px; top:104px; height:52px;  width:10%; } /* 設定D框固定在瀏覽器最右邊 */
 #E { position: absolute; left: 0px; top:156px; width:100%;} /* 設定E框固定在瀏覽器最左邊 */
+
+.blackDiv {
+	height: 100%;
+	width: 100%;
+	background : #000;
+	opacity: 0.7;
+	z-index: 1;
+}

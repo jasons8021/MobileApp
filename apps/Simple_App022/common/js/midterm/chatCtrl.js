@@ -5,6 +5,7 @@ app.controller('ChatCtrl', function($scope, ChatManager, $stateParams, FriendMan
 	$scope.chatMessageList = ChatManager.get($scope.phone);
 	$scope.friendName = FriendManager.getByPhone($scope.phone).name;
 	$scope.hostPhone = SettingManager.getHost().phone;
+	$scope.chooseRestaurant = false;
 	
 	$scope.$on('receivedMessage', function(event, message) {
 		if (message.hasRead) {
@@ -44,6 +45,7 @@ app.controller('ChatCtrl', function($scope, ChatManager, $stateParams, FriendMan
     };
 	
     $scope.onLocationClick = function() {
+    	$scope.chooseRestaurant = true;
     	Geolocation.getCurrentPosition(function(position) {
     		// (25.0693046,121.661722)
     		$scope.chatMessage.text = "("+position.coords.latitude+","+position.coords.longitude+")" + $scope.chatMessage.text;
@@ -52,7 +54,8 @@ app.controller('ChatCtrl', function($scope, ChatManager, $stateParams, FriendMan
     };
 
     function onError(error) {
-    	alert('code: ' + error.code + '\n' + 'message: ' + error.message + '\n');
+    	// alert('code: ' + error.code + '\n' + 'message: ' + error.message + '\n');
+    	console.log('GPS is not work. code: ' + error.code + '\n' + 'message: ' + error.message + '\n');
 	}
 
     $scope.hasLocation = function(message) {
@@ -81,4 +84,9 @@ app.controller('ChatCtrl', function($scope, ChatManager, $stateParams, FriendMan
 			$window.location = "#/tab/chatList";
 		}
 	}];
+
+	$scope.onBlackDivClick = function()
+	{
+		$scope.chooseRestaurant = false;
+	};
 });

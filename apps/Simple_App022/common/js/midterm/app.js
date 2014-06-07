@@ -52,15 +52,6 @@ app.config(function($stateProvider, $urlRouterProvider) {
                 }
             }
         })
-        .state('tab.test', {
-            url: '/test',
-            views: {
-                'tab-test': {
-                    templateUrl: 'templates/midterm/test.html',
-                    controller: 'TestCtrl'
-                }
-            }
-        })
         .state('editFriends', {
             url: '/editFriends',
             templateUrl: 'templates/midterm/editFriends.html',
