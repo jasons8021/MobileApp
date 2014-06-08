@@ -52,21 +52,21 @@ app.controller('FriendsCtrl', function($scope, FriendManager, $window, $ionicLoa
 		$scope.state = $scope.CREATE;
 	};
 
-	$scope.onSMSClick = function() {
-		var message = $scope.model.name + "：真高興，你又長了一歲。祝你生日快樂，永遠快樂！";
-		$window.sms.send($scope.model.phone, message, "INTENT");
-		//$window.open("sms:"+ $scope.model.phone + "?body=" + message);
-	};
+	// $scope.onSMSClick = function() {
+	// 	var message = $scope.model.name + "：真高興，你又長了一歲。祝你生日快樂，永遠快樂！";
+	// 	$window.sms.send($scope.model.phone, message, "INTENT");
+	// 	//$window.open("sms:"+ $scope.model.phone + "?body=" + message);
+	// };
 	
-	$scope.onPhoneClick = function() {
-		$window.open("tel:"+ $scope.model.phone);
-	};
+	// $scope.onPhoneClick = function() {
+	// 	$window.open("tel:"+ $scope.model.phone);
+	// };
 	
-	$scope.onEmailClick = function() {
-		var subject = "生日快樂！";
-		var message = $scope.model.name + "：真高興，你又長了一歲。祝你生日快樂，永遠快樂！";
-		$window.plugins.emailComposer.showEmailComposer(subject, message, [$scope.model.email], [], [], true, []);
-		//$window.open('mailto:' + $scope.model.email + '?subject=' + subject + '&body=' + message);
-	};
+	// $scope.onEmailClick = function() {
+	// 	var subject = "生日快樂！";
+	// 	var message = $scope.model.name + "：真高興，你又長了一歲。祝你生日快樂，永遠快樂！";
+	// 	$window.plugins.emailComposer.showEmailComposer(subject, message, [$scope.model.email], [], [], true, []);
+	// 	//$window.open('mailto:' + $scope.model.email + '?subject=' + subject + '&body=' + message);
+	// };
 	
 });

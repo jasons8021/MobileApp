@@ -52,6 +52,15 @@ app.config(function($stateProvider, $urlRouterProvider) {
                 }
             }
         })
+        .state('tab.chooseRestaurant', {
+            url: '/chooseRestaurant',
+            views: {
+                'tab-chooseRestaurant': {
+                    templateUrl: 'templates/midterm/chooseRestaurant.html',
+                    controller: 'ChooseRestaurantCtrl'
+                }
+            }
+        })
         .state('editFriends', {
             url: '/editFriends',
             templateUrl: 'templates/midterm/editFriends.html',
