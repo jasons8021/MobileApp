@@ -9,8 +9,6 @@
 	      		傳送
 	    	</button>
 	    	<img ng-src="images/food.png" ng-click="onLocationClick()">
-	      		
-	    	</button>
     	</div>
     	<div ng-repeat="chatMessage in chatMessageList | reverseArray track by $index">
 	        <div ng-class="chatMessage.senderPhone == hostPhone ? 'hostmessages' : 'guestmessages'" ng-click="onMessageClick(chatMessage)">

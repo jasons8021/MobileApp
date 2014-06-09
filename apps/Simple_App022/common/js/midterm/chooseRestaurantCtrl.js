@@ -1,7 +1,9 @@
-app.controller('ChooseRestaurantCtrl', function($scope, RestaurantManager, Geolocation, $location, $window, webServiceRestaurant){
+app.controller('ChooseRestaurantCtrl', function($scope,$stateParams, RestaurantManager, Geolocation, $state, $window, webServiceRestaurant){
     
-    $scope.hasChosen = true;
-    $scope.
+    $scope.phone = $stateParams.phone;
+    $scope.hasChosen = false;
+    $scope.chosenRestaurantId = null;
+
     var taipeiTech = new google.maps.LatLng(25.043022, 121.534248);
     var getInfoWindow = (function(){
         var infowindow = null;
@@ -16,7 +18,6 @@ app.controller('ChooseRestaurantCtrl', function($scope, RestaurantManager, Geolo
     var restaurantList = [];
     var restaurantLatLngs = [];
     var markers = [];
-    // var infowindows = [];
     var currentLatLng;
     var geocoder;
     var map;
@@ -55,24 +56,54 @@ app.controller('ChooseRestaurantCtrl', function($scope, RestaurantManager, Geolo
         for(var i in restaurantLatLngs)
         {
         	var marker = new google.maps.Marker({
+                id:i,
 	        	map:map,
 	        	draggable:false,
-	        	animation: google.maps.Animation.DROP,
                 title: restaurantList[i].name,
 	        	position: new google.maps.LatLng(restaurantLatLngs[i][1], restaurantLatLngs[i][2])
         	});
-            attachMessage(marker);
+            attachClickEvent(marker);
             markers.push(marker);
         }
+
+        // console 
+        // for(var i in restaurantList)
+        // {
+        //     console.log('Enter click');
+        //     console.log('Enter click -- 名稱 : ' + restaurantList[i].name + ', 地址 : ' + restaurantList[i].address + ', 經緯度 : ' + restaurantList[i].latlng);
+        // }
+
+        // for (var i in restaurantLatLngs) {
+        //     console.log('Enter click -- Lat : ' + restaurantLatLngs[i][1] + ', Lng : ' + restaurantLatLngs[i][2]);
+        // };
+
+        // for (var i in markers) {
+        //     console.log('Enter click -- marker ' + i + ' : ' + markers[i].title);
+        // };
+
+        // console.log('$scope.chosenRestaurantLatLng = ' + $scope.chosenRestaurantLatLng);
         
     }
 
-    function attachMessage(marker) {
+    function attachClickEvent(marker) {
         google.maps.event.addListener(marker, 'click', function() {
             getInfoWindow().setContent(marker.title);
             getInfoWindow().open(marker.get('map'), marker);
+            $scope.chosenRestaurantId = marker.id;
+            $scope.hasChosen = true;
+            $scope.$apply();
+            // toggleBounce(marker);
         });
     }
+
+    // function toggleBounce(marker) {
+    //   if (marker.getAnimation() != null) {
+    //     marker.setAnimation(null);
+    //   } else {
+    //     marker.setAnimation(google.maps.Animation.BOUNCE);
+    //     setTimeout(function(){ marker.setAnimation(null); }, 750);
+    //   }
+    // }
 
     function getRestaurantList() {
     	webServiceRestaurant.getRestaurantList(function(response) {
@@ -105,21 +136,12 @@ app.controller('ChooseRestaurantCtrl', function($scope, RestaurantManager, Geolo
     };
 
     $scope.onEnterClick = function() {
-    	for(var i in restaurantList)
-        {
-        	console.log('Enter click');
-        	console.log('Enter click -- 名稱 : ' + restaurantList[i].name + ', 地址 : ' + restaurantList[i].address + ', 經緯度 : ' + restaurantList[i].latlng);
-        }
 
-        for (var i in restaurantLatLngs) {
-        	console.log('Enter click -- Lat : ' + restaurantLatLngs[i][1] + ', Lng : ' + restaurantLatLngs[i][2]);
-        };
-
-        for (var i in markers) {
-            console.log('Enter click -- marker ' + i + ' : ' + markers[i].title);
-        };
-
-        
-        // $scope.hasChosen = false;
+        $scope.hasChosen = false;
+        console.log('restaurantList[$scope.chosenRestaurantId].latlng = ' + restaurantList[$scope.chosenRestaurantId].latlng);
+        $state.go('chat', {
+            phone : $scope.phone = $stateParams.phone,
+            latlng : restaurantList[$scope.chosenRestaurantId].latlng
+        });
     };
 });

@@ -1,11 +1,11 @@
 app.controller('ChatCtrl', function($scope, ChatManager, $stateParams, FriendManager, SettingManager, webServiceMessage, $window, Geolocation, $state){
 	$scope.phone = $stateParams.phone;
+	$scope.latlng = $stateParams.latlng;
 	$scope.chatMessage = {};
 	$scope.chatMessage.text = $stateParams.defaultMessage ? $stateParams.defaultMessage : "";
 	$scope.chatMessageList = ChatManager.get($scope.phone);
 	$scope.friendName = FriendManager.getByPhone($scope.phone).name;
 	$scope.hostPhone = SettingManager.getHost().phone;
-	$scope.chooseRestaurant = false;
 	
 	$scope.$on('receivedMessage', function(event, message) {
 		if (message.hasRead) {
@@ -19,6 +19,13 @@ app.controller('ChatCtrl', function($scope, ChatManager, $stateParams, FriendMan
 		for(var index in $scope.chatMessageList) {
 			var message = $scope.chatMessageList[index];
 			$scope.readMessage(message);
+		}
+		console.log('$scope.latlng' + $scope.latlng);
+
+		if($scope.latlng != null)
+		{
+			$scope.chatMessage.text = $scope.latlng;
+    		$scope.onSendMessageClick();
 		}
 	};
 	
@@ -45,12 +52,13 @@ app.controller('ChatCtrl', function($scope, ChatManager, $stateParams, FriendMan
     };
 	
     $scope.onLocationClick = function() {
-    	$scope.chooseRestaurant = true;
-    	Geolocation.getCurrentPosition(function(position) {
-    		// (25.0693046,121.661722)
-    		$scope.chatMessage.text = "("+position.coords.latitude+","+position.coords.longitude+")" + $scope.chatMessage.text;
-    		$scope.onSendMessageClick();
-    	}, onError);
+
+    	$state.go('chooseRestaurant', {
+        	phone: $scope.phone
+        });
+
+    	// $scope.chatMessage.text = "("+position.coords.latitude+","+position.coords.longitude+")" + $scope.chatMessage.text;
+    	// $scope.onSendMessageClick();
     };
 
     function onError(error) {
@@ -84,9 +92,4 @@ app.controller('ChatCtrl', function($scope, ChatManager, $stateParams, FriendMan
 			$window.location = "#/tab/chatList";
 		}
 	}];
-
-	$scope.onBlackDivClick = function()
-	{
-		$scope.chooseRestaurant = false;
-	};
 });

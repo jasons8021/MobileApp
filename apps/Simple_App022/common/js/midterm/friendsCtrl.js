@@ -41,7 +41,10 @@ app.controller('FriendsCtrl', function($scope, FriendManager, $window, $ionicLoa
 	};
 
 	$scope.toURL = function(phone) {
-		$state.go('chat',{phone:phone});
+		$state.go('chat',{
+			phone:phone,
+			latlng:null		// no declaration this, latlng will be null in chat.
+		});
 	};
 	
 	$scope.onDeleteClick = function(friendID) {
