@@ -1,14 +1,46 @@
 app.controller('ChooseRestaurantCtrl', function($scope, RestaurantManager, Geolocation, $location, $window, webServiceRestaurant){
     
     $scope.hasChosen = true;
+    $scope.
     var taipeiTech = new google.maps.LatLng(25.043022, 121.534248);
-    var infowindow = new google.maps.InfoWindow();
+    var getInfoWindow = (function(){
+        var infowindow = null;
+        return function(){
+           if(infowindow == null){
+               infowindow = new google.maps.InfoWindow({
+               });
+           }
+           return infowindow;
+        };
+    })();
     var restaurantList = [];
     var restaurantLatLngs = [];
     var markers = [];
+    // var infowindows = [];
     var currentLatLng;
     var geocoder;
     var map;
+
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    // PhoneGap is ready
+    //
+    function onDeviceReady() {
+        Geolocation.getCurrentPosition(onSuccess, onError);
+    }
+
+    function onSuccess(position) {
+        console.log('geolocation success');
+        currentLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        console.log('geolocation success, currentLatLng : ' + currentLatLng);
+    }
+
+    // onError Callback receives a PositionError object
+    //
+    function onError(error) {
+        console.log('geolocation fail');
+        currentLatLng = new google.maps.LatLng(25.043022, 121.534248);
+    }
 
     function initialize(currentPosition) {
         var mapOptions = {
@@ -29,18 +61,17 @@ app.controller('ChooseRestaurantCtrl', function($scope, RestaurantManager, Geolo
                 title: restaurantList[i].name,
 	        	position: new google.maps.LatLng(restaurantLatLngs[i][1], restaurantLatLngs[i][2])
         	});
+            attachMessage(marker);
             markers.push(marker);
         }
-
-        for(var i in markers)
-        {
-            var marker = markers[i];
-            google.maps.event.addListener(marker, 'click', function(evt){
-                infowindow.setContent(marker.title);
-                infowindow.open(map, this);
-            });
-        }
         
+    }
+
+    function attachMessage(marker) {
+        google.maps.event.addListener(marker, 'click', function() {
+            getInfoWindow().setContent(marker.title);
+            getInfoWindow().open(marker.get('map'), marker);
+        });
     }
 
     function getRestaurantList() {
@@ -66,6 +97,7 @@ app.controller('ChooseRestaurantCtrl', function($scope, RestaurantManager, Geolo
     	getRestaurantList();
     	Geolocation.getCurrentPosition(function(position) {
             console.log('gps work');
+            currentLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude); 
             initialize(currentLatLng);
         }, function(error){
             initialize(taipeiTech);
@@ -82,6 +114,12 @@ app.controller('ChooseRestaurantCtrl', function($scope, RestaurantManager, Geolo
         for (var i in restaurantLatLngs) {
         	console.log('Enter click -- Lat : ' + restaurantLatLngs[i][1] + ', Lng : ' + restaurantLatLngs[i][2]);
         };
+
+        for (var i in markers) {
+            console.log('Enter click -- marker ' + i + ' : ' + markers[i].title);
+        };
+
+        
         // $scope.hasChosen = false;
     };
 });

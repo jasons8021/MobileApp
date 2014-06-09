@@ -10,6 +10,27 @@ app.controller('FoodMapCtrl', function($scope, RestaurantManager, Geolocation, $
     var marker;
     var map;
 
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    // PhoneGap is ready
+    //
+    function onDeviceReady() {
+        Geolocation.getCurrentPosition(onSuccess, onError);
+    }
+
+    function onSuccess(position) {
+        console.log('geolocation success');
+        currentLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        console.log('geolocation success, currentLatLng : ' + currentLatLng);
+    }
+
+    // onError Callback receives a PositionError object
+    //
+    function onError(error) {
+        console.log('geolocation fail');
+        currentLatLng = new google.maps.LatLng(25.043022, 121.534248);
+    }
+
     function initialize(currentPosition) {
         var mapOptions = {
             zoom: 17,
@@ -69,6 +90,7 @@ app.controller('FoodMapCtrl', function($scope, RestaurantManager, Geolocation, $
     $scope.init = function() {
         Geolocation.getCurrentPosition(function(position) {
             console.log('gps work');
+            currentLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude); 
             initialize(currentLatLng);
         }, function(error){
             initialize(taipeiTech);
