@@ -1,6 +1,7 @@
-app.controller('ChatCtrl', function($scope, ChatManager, $stateParams, FriendManager, SettingManager, webServiceMessage, $window, Geolocation, $state){
+app.controller('ChatCtrl', function($scope, ChatManager, $stateParams, FriendManager, SettingManager, webServiceMessage, $window, Geolocation, $state, $location){
 	$scope.phone = $stateParams.phone;
-	$scope.latlng = $stateParams.latlng;
+	$scope.restaurantLatlng = $stateParams.latlng;
+	$scope.restaurantName = $stateParams.restaurantName;
 	$scope.chatMessage = {};
 	$scope.chatMessage.text = $stateParams.defaultMessage ? $stateParams.defaultMessage : "";
 	$scope.chatMessageList = ChatManager.get($scope.phone);
@@ -20,11 +21,13 @@ app.controller('ChatCtrl', function($scope, ChatManager, $stateParams, FriendMan
 			var message = $scope.chatMessageList[index];
 			$scope.readMessage(message);
 		}
-		console.log('$scope.latlng' + $scope.latlng);
 
-		if($scope.latlng != null)
+		console.log('$scope.latlng = ' + $scope.restaurantLatlng);
+		console.log('$scope.restaurantName = ' + $scope.restaurantName);
+
+		if($scope.restaurantLatlng != null)
 		{
-			$scope.chatMessage.text = $scope.latlng;
+			$scope.chatMessage.text = $scope.restaurantLatlng;
     		$scope.onSendMessageClick();
 		}
 	};
@@ -52,13 +55,9 @@ app.controller('ChatCtrl', function($scope, ChatManager, $stateParams, FriendMan
     };
 	
     $scope.onLocationClick = function() {
-
     	$state.go('chooseRestaurant', {
         	phone: $scope.phone
         });
-
-    	// $scope.chatMessage.text = "("+position.coords.latitude+","+position.coords.longitude+")" + $scope.chatMessage.text;
-    	// $scope.onSendMessageClick();
     };
 
     function onError(error) {
@@ -75,21 +74,21 @@ app.controller('ChatCtrl', function($scope, ChatManager, $stateParams, FriendMan
     $scope.onMessageClick = function(message) {
     	if (message.hasLocation) {
         	var latlng = message.message.match(/([0-9.-]+).+?([0-9.-]+)/);
-        	console.log(message.senderPhone == $scope.hostPhone);
+        	console.log('$scope.restaurantName ' + $scope.restaurantName);
         	$state.go('map', {
-        		latitude:latlng[1],
-        		longitude:latlng[2],
-        		friendName:$scope.friendName,
-        		isMe:message.senderPhone == $scope.hostPhone
+        		latitude : latlng[1],
+        		longitude : latlng[2],
+        		restaurantName : $scope.restaurantName,
+        		phone : $scope.phone
         	});
     	}
     };
-    
+
 	$scope.backButton = [{
-		type: 'ion-arrow-left-c',
-		content: "",
+		type: 'button-positive',
+		content: "<i class='icon ion-arrow-left-a'></i>",
 		tap: function() {
-			$window.location = "#/tab/chatList";
-		}
+				$location.url('/tab/friends');
+			}
 	}];
 });

@@ -23,7 +23,8 @@ app.controller('ChatListCtrl', function($scope, ChatManager, $window, FriendMana
 	$scope.toURL = function(phone) {
 		$state.go('chat',{
 			phone:phone,
-			latlng:null
+			latlng:null,
+			restaurantName:null
 		});
 	};
 	

@@ -58,12 +58,12 @@ app.config(function($stateProvider, $urlRouterProvider) {
             controller: 'EditFriendsCtrl'
         })
         .state('chat', {
-            url: '/chat?phone&defaultMessage&latlng',
+            url: '/chat?phone&defaultMessage&latlng&restaurantName',
             templateUrl: 'templates/midterm/chat.html',
             controller: 'ChatCtrl'
         })
         .state('map', {
-            url: '/map?latitude&longitude&friendName&isMe',
+            url: '/map?latitude&longitude&restaurantName&phone',
             templateUrl: 'templates/midterm/map.html',
             controller: 'MapCtrl'
         })

@@ -73,7 +73,7 @@ app.controller('FoodMapCtrl', function($scope, RestaurantManager, Geolocation, $
                     // $scope.restaurant.latlng = '(' + lat.toFixed(7) + ',' + lng.toFixed(7) + ')';
                     $scope.restaurant.lat = lat.toFixed(7);
                     $scope.restaurant.lng = lng.toFixed(7);
-                    RestaurantManager.setRestaurant($scope.restaurant);
+                    // RestaurantManager.setRestaurant($scope.restaurant);
                 } else {
                     alert('找不到該地址');
                     $scope.address.hasAddress = false;
@@ -98,8 +98,16 @@ app.controller('FoodMapCtrl', function($scope, RestaurantManager, Geolocation, $
 
     $scope.onEnterClick = function() {
         $scope.address.hasAddress = false;
-
+        RestaurantManager.setRestaurant($scope.restaurant);
         $location.url('/addRestaurants');
         // $state.go('addRestaurants');
     };
+
+    $scope.backButton = [{
+        type: 'button-positive',
+        content: "<i class='icon ion-arrow-left-a'></i>",
+        tap: function() {
+                $location.url('/addRestaurants');
+            }
+    }];
 });

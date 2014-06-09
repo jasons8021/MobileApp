@@ -161,10 +161,10 @@ app.controller('AddFriendsCtrl', function($scope, FriendManager, SettingManager,
     };
 
     $scope.backButton = [{
-        type: 'ion-arrow-left-c',
-        content: "",
+        type: 'button-positive',
+        content: "<i class='icon ion-arrow-left-a'></i>",
         tap: function() {
-            $window.location = "#/tab/add";
+            $location.url('/tab/add');
         }
     }];
 });

@@ -139,9 +139,23 @@ app.controller('ChooseRestaurantCtrl', function($scope,$stateParams, RestaurantM
 
         $scope.hasChosen = false;
         console.log('restaurantList[$scope.chosenRestaurantId].latlng = ' + restaurantList[$scope.chosenRestaurantId].latlng);
+        console.log('restaurantList[$scope.chosenRestaurantId].name = ' + restaurantList[$scope.chosenRestaurantId].name);
         $state.go('chat', {
-            phone : $scope.phone = $stateParams.phone,
-            latlng : restaurantList[$scope.chosenRestaurantId].latlng
+            phone : $scope.phone,
+            latlng : restaurantList[$scope.chosenRestaurantId].latlng,
+            restaurantName : restaurantList[$scope.chosenRestaurantId].name
         });
     };
+
+    $scope.backButton = [{
+        type: 'button-positive',
+        content: "<i class='icon ion-arrow-left-a'></i>",
+        tap: function() {
+            $state.go('chat', {
+                phone : $scope.phone,
+                latlng : null,
+                restaurantName : null
+            });
+        }
+    }];
 });

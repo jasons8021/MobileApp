@@ -43,27 +43,12 @@ app.controller('AddRestaurantsCtrl', function($scope, Notification, $window, $io
         RestaurantManager.setRestaurant($scope.restaurant);
         $location.url('/foodMap');
     };
-    
-    $scope.ontestClick = function() {
-        webServiceRestaurant.getRestaurantList(
-            function(response) {
-                console.log('response : ' + response);
-                for(var i in response)
-                {
-                    console.log('名稱 : ' + response[i].name + ', 地址 : ' + response[i].address + ', 經緯度 : ' + response[i].latlng);
-                }
-                
-            },function() {
-                console.log('error');
-            });
-    };
 
     $scope.backButton = [{
-        type: 'ion-arrow-left-c',
-        content: "",
+        type: 'button-positive',
+        content: "<i class='icon ion-arrow-left-a'></i>",
         tap: function() {
-            RestaurantManager.clearLocalStorage();
-            $window.location = "#/tab/add";
+            $location.url('/tab/add');
         }
     }];
 });

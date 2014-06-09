@@ -1,36 +1,31 @@
-app.controller('MapCtrl', function($scope, $stateParams, Geolocation, $window){
-	$scope.friendName = $stateParams.friendName;
-	$scope.isMe = JSON.parse($stateParams.isMe);
+app.controller('MapCtrl', function($scope, $stateParams, Geolocation, $window, $state){
+	$scope.restaurantName = $stateParams.restaurantName;
+	$scope.phone = $stateParams.phone;
 	$scope.position = {};
 	$scope.distance = {};
 	$scope.distance.text = "";
 	$scope.duration = {};
 	$scope.duration.text = "";
 	$scope.zoom = 13;
-	
+
+	var infowindowOriginal = new google.maps.InfoWindow();
+	var infowindowDestination = new google.maps.InfoWindow();
+
+	document.addEventListener("deviceready", onDeviceReady, false);
+
+    // PhoneGap is ready
+    //
+    function onDeviceReady() {
+        Geolocation.getCurrentPosition(function(position){
+        	console.log('position' + position);
+        }, function(error){
+        	console.log('error' + error);
+        });
+    }
+
 	$scope.init = function() {
-		var x_offset = 30;
-		var y_offset = 65;
-		if($scope.isMe) {
-			var origin = new google.maps.LatLng($stateParams.latitude, $stateParams.longitude);
-			var mapOptions = {
-				    zoom: $scope.zoom,
-				    center: origin,
-				    disableDefaultUI: true
-				  };
-			var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-			var marker = new MarkerWithLabel({
-			    position: origin,
-			    labelContent: "我",
-			    labelAnchor: new google.maps.Point(x_offset, y_offset),
-			    labelClass: "labels",
-			    labelStyle: {opacity: 0.75}
-			});
-			$scope.friendName = "我的位置";	
-			marker.setMap(map);
-		} else {
-			Geolocation.getCurrentPosition(onSuccess, onError);			
-		}
+		console.log('$scope.restaurantName ' + $scope.restaurantName);
+		Geolocation.getCurrentPosition(onSuccess, onError);
 	};
 
 	function onSuccess(position) {
@@ -63,20 +58,40 @@ app.controller('MapCtrl', function($scope, $stateParams, Geolocation, $window){
 		    	$scope.distance.text = leg.distance.text;
 		    	$scope.duration.text = leg.duration.text;
 		    	$scope.$apply();
-				var destinationMarker = new MarkerWithLabel({
-					position: new google.maps.LatLng(leg.end_location.k, leg.end_location.A),
-				    labelContent: $scope.friendName,
-				    labelAnchor: new google.maps.Point(x_offset, y_offset),
-				    labelClass: "labels"
+
+		    	var image = {
+				  	url: 'images/destinationFlag.png',
+				  	// This marker is 20 pixels wide by 32 pixels tall.
+				  	size: new google.maps.Size(20, 32),
+				  	// The origin for this image is 0,0.
+				  	origin: new google.maps.Point(0,0),
+				  	// The anchor for this image is the base of the flagpole at 0,32.
+				  	anchor: new google.maps.Point(0, 32)
+				};
+				var shape = {
+				    coords: [1, 1, 1, 20, 18, 20, 18 , 1],
+				    type: 'poly'
+				};
+
+				var destinationMarker = new google.maps.Marker({
+				    position: new google.maps.LatLng(leg.end_location.k, leg.end_location.A),
+				    map: map,
+				    icon: image,
+				    shape: shape
 				});
-		    	var originMarker = new MarkerWithLabel({
-				    position: new google.maps.LatLng(leg.start_location.k, leg.start_location.A),
-				    labelContent: "我",
-				    labelAnchor: new google.maps.Point(x_offset, y_offset),
-				    labelClass: "labels"
-				});
-		    	originMarker.setMap(map);
-		    	destinationMarker.setMap(map);
+
+				infowindowDestination.setContent($scope.restaurantName);
+				infowindowDestination.open(map, destinationMarker);
+
+				var originMarker = new google.maps.Marker({
+					position: new google.maps.LatLng(leg.start_location.k, leg.start_location.A),
+		            map:map,
+		            icon : 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+		        });
+
+                infowindowOriginal.setContent('我在這');
+                infowindowOriginal.open(map, originMarker);
+
 				directionsDisplay.setMap(map);
 		    }
 		});
@@ -85,4 +100,16 @@ app.controller('MapCtrl', function($scope, $stateParams, Geolocation, $window){
 	function onError(error) {
     	alert('請開啟GPS');
 	}
+
+	$scope.backButton = [{
+        type: 'button-positive',
+        content: "<i class='icon ion-arrow-left-a'></i>",
+        tap: function() {
+            $state.go('chat', {
+                phone : $scope.phone,
+                latlng : null,
+                restaurantName : null
+            });
+        }
+    }];
 });
