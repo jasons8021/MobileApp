@@ -43,12 +43,21 @@ app.config(function($stateProvider, $urlRouterProvider) {
                 }
             }
         })
-        .state('tab.publish', {
-            url: '/publish',
+        // .state('tab.publish', {
+        //     url: '/publish',
+        //     views: {
+        //         'tab-publish': {
+        //             templateUrl: 'templates/midterm/publish.html',
+        //             controller: 'PublishCtrl'
+        //         }
+        //     }
+        // })
+        .state('tab.game', {
+            url: '/game',
             views: {
-                'tab-publish': {
-                    templateUrl: 'templates/midterm/publish.html',
-                    controller: 'PublishCtrl'
+                'tab-game': {
+                    templateUrl: 'templates/midterm/game.html',
+                    controller: 'GameCtrl'
                 }
             }
         })
